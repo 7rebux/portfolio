@@ -6,7 +6,7 @@ function App() {
     <>
       <Header />
       <main>
-        <p class='text-4xl text-green-700'>Hello Tailwind!</p>
+        <p class='text-4xl text-blue-500'>Hello Tailwind!</p>
       </main>
       <Footer />
     </>
