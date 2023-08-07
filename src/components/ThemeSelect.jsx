@@ -1,18 +1,10 @@
-import { updateTheme } from '../utils';
+import useTheme from '~/hooks/useTheme';
 
 const ThemeSelect = () => {
-  const toggle = (theme) => {
-    if (theme === 'system') {
-      localStorage.removeItem('theme');
-    } else {
-      localStorage.theme = theme;
-    }
-
-    updateTheme();
-  };
+  const [theme, setTheme] = useTheme();
 
   return (
-    <select value={localStorage.theme ?? 'system'} onchange={(e) => toggle(e.target.value)}>
+    <select value={theme()} onchange={(e) => setTheme(e.target.value)}>
       <option value='system'>System</option>
       <option value='dark'>Dark</option>
       <option value='light'>Light</option>
