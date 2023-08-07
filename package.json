@@ -19,10 +19,11 @@
     "vite": "^4.4.6"
   },
   "dependencies": {
-    "solid-js": "^1.7.8",
-    "solid-start": "^0.2.30",
     "@solidjs/meta": "^0.28.2",
     "@solidjs/router": "^0.8.2",
+    "solid-js": "^1.7.8",
+    "solid-start": "^0.2.30",
+    "solid-start-vercel": "^0.2.30",
     "undici": "^5.15.1"
   }
 }
