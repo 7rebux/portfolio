@@ -18,7 +18,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav class='border border-zinc-200 dark:border-zinc-600 sm:rounded-full overflow-hidden'>
+    <nav class='select-none sm:border border-zinc-200 dark:border-zinc-600 sm:rounded-full overflow-hidden'>
       <ul class='w-screen sm:w-min flex flex-col sm:flex-row px-3 sm:px-8 py-3 gap-6 bg-surface-light dark:bg-surface-dark'>
         <For each={routes}>
           {({ title, path }) => (

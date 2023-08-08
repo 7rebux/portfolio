@@ -20,10 +20,12 @@ const socials = [
 
 const Footer = () => {
   return (
-    <footer class='mt-auto border-t border-t-zinc-200 dark:border-t-zinc-600 p-10 flex flex-col sm:flex-row items-center justify-around gap-4 sm:gap-0 bg-surface-light dark:bg-surface-dark'>
-      <p title='Germany'>🇩🇪</p>
+    <footer class='mt-auto border-t border-t-zinc-200 dark:border-t-zinc-600 p-10 flex flex-col sm:flex-row items-center justify-around gap-5 sm:gap-0 bg-surface-light dark:bg-surface-dark'>
+      <div class='flex-grow basis-0 inline-flex justify-center'>
+        <p title='Germany'>🇩🇪</p>
+      </div>
       <p class='text-sm text-zinc-500'>&copy; 2023 Nils Osswald. All rights reserved.</p>
-      <div class='inline-flex gap-4'>
+      <div class='flex-grow basis-0 inline-flex justify-center gap-4'>
         <For each={socials}>
           {({ title, href, icon }) => (
             <a href={href} target='_blank' title={title}>
