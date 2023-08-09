@@ -1,5 +1,4 @@
 import { For } from 'solid-js';
-
 const socials = [
   {
     title: 'GitHub',
@@ -20,12 +19,17 @@ const socials = [
 
 const Footer = () => {
   return (
-    <footer class='mt-auto border-t border-t-zinc-200 dark:border-t-zinc-600 p-10 flex flex-col sm:flex-row items-center justify-around gap-5 sm:gap-0 bg-surface-light dark:bg-surface-dark'>
-      <div class='flex-grow basis-0 inline-flex justify-center'>
-        <p title='Germany'>🇩🇪</p>
-      </div>
+    <footer class='mt-auto flex flex-col sm:flex-row gap-5 sm:gap-0 justify-around items-center p-10 border-t border-zinc-200 dark:border-t-zinc-600 bg-surface-light dark:bg-surface-dark'>
+      {/* Flag */}
+      <p class='flex-grow basis-0 text-center' title='Germany'>
+        🇩🇪
+      </p>
+
+      {/* Copyright */}
       <p class='text-sm text-zinc-500'>&copy; 2023 Nils Osswald. All rights reserved.</p>
-      <div class='flex-grow basis-0 inline-flex justify-center gap-4'>
+
+      {/* Socials */}
+      <div class='inline-flex flex-grow basis-0 gap-4 justify-center'>
         <For each={socials}>
           {({ title, href, icon }) => (
             <a href={href} target='_blank' title={title}>
