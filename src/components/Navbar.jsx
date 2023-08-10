@@ -1,6 +1,7 @@
 import { For, Show, createSignal } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { A, useLocation } from 'solid-start';
+import { CloseIcon } from './icons';
 import clickOutside from '~/directives/clickOutside';
 import routes from '~/routes.json';
 
@@ -17,7 +18,10 @@ const Navbar = () => {
       <ul class='hidden gap-8 rounded-full border border-zinc-200 bg-surface-light px-8 py-3 dark:border-zinc-600 dark:bg-surface-dark sm:flex'>
         <For each={routes}>
           {({ title, path }) => (
-            <li class={active(path) ? 'font-semibold text-primary' : 'text-black dark:text-white'}>
+            <li
+              aria-selected={active(path)}
+              class='text-black aria-selected:font-semibold aria-selected:text-primary dark:text-white aria-selected:dark:text-primary'
+            >
               <A href={path}>{title}</A>
             </li>
           )}
@@ -44,16 +48,7 @@ const Navbar = () => {
               <div class='flex items-center justify-between border-b-4 border-double border-zinc-200 px-3 py-2 text-sm text-zinc-400 dark:border-zinc-600'>
                 Navigation
                 <button onClick={() => setExpanded(false)}>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='none'
-                    viewBox='0 0 24 24'
-                    stroke-width='1.5'
-                    stroke='currentColor'
-                    class='h-5 w-5 text-black dark:text-white'
-                  >
-                    <path stroke-linecap='round' stroke-linejoin='round' d='M6 18L18 6M6 6l12 12' />
-                  </svg>
+                  <CloseIcon class='text-zinc-800 hover:text-black dark:text-zinc-200 hover:dark:text-white' />
                 </button>
               </div>
 
@@ -61,12 +56,9 @@ const Navbar = () => {
               <For each={routes}>
                 {({ title, path }) => (
                   <A
-                    class={`
-                  ${
-                    active(path) ? 'font-semibold text-primary' : 'text-black dark:text-white'
-                  } border-b border-zinc-200 p-3 last:border-0 dark:border-zinc-600
-                `}
+                    class='border-b border-zinc-200 p-3 text-black last:border-0 aria-selected:font-semibold aria-selected:text-primary dark:border-zinc-600 dark:text-white aria-selected:dark:text-primary'
                     href={path}
+                    aria-selected={active(path)}
                     onClick={() => setExpanded(false)}
                   >
                     {title}
