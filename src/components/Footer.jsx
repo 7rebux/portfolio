@@ -19,7 +19,7 @@ const socials = [
 
 const Footer = () => {
   return (
-    <footer class='mt-auto flex flex-col sm:flex-row gap-5 sm:gap-0 justify-around items-center p-10 border-t border-zinc-200 dark:border-t-zinc-600 bg-surface-light dark:bg-surface-dark'>
+    <footer class='mt-auto flex flex-col items-center justify-around gap-5 border-t border-zinc-200 bg-surface-light p-10 dark:border-t-zinc-600 dark:bg-surface-dark sm:flex-row sm:gap-0'>
       {/* Flag */}
       <p class='flex-grow basis-0 text-center' title='Germany'>
         🇩🇪
@@ -29,7 +29,7 @@ const Footer = () => {
       <p class='text-sm text-zinc-500'>&copy; 2023 Nils Osswald. All rights reserved.</p>
 
       {/* Socials */}
-      <div class='inline-flex flex-grow basis-0 gap-4 justify-center'>
+      <div class='inline-flex flex-grow basis-0 justify-center gap-4'>
         <For each={socials}>
           {({ title, href, icon }) => (
             <a href={href} target='_blank' title={title}>

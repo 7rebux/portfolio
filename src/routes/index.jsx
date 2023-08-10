@@ -1,7 +1,7 @@
 const About = () => {
   return (
     <main>
-      <div class='text-black dark:text-white text-4xl font-bold leading-snug'>
+      <div class='text-4xl font-bold leading-snug text-black dark:text-white'>
         <p>Hey There! 👋</p>
         <p>
           I'm <span class='text-primary'>Nils</span>, A Full Stack

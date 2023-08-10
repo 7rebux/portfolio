@@ -3,15 +3,15 @@ import ThemeSelect from './ThemeSelect';
 
 const Header = () => {
   return (
-    <header class='flex p-4 sm:py-8 justify-between sm:justify-around items-center border-b sm:border-0 border-zinc-200 dark:border-zinc-600 bg-surface-light dark:bg-surface-dark sm:bg-transparent sm:dark:bg-transparent'>
+    <header class='flex items-center justify-between border-b border-zinc-200 bg-surface-light p-4 dark:border-zinc-600 dark:bg-surface-dark sm:justify-around sm:border-0 sm:bg-transparent sm:py-8 sm:dark:bg-transparent'>
       {/* Spacer */}
-      <div class='hidden sm:block flex-grow basis-0' />
+      <div class='hidden flex-grow basis-0 sm:block' />
 
       {/* Navbar */}
       <Navbar />
 
       {/* Theme select */}
-      <div class='flex-none sm:flex-grow basis-0 inline-flex justify-center'>
+      <div class='inline-flex flex-none basis-0 justify-center sm:flex-grow'>
         <ThemeSelect />
       </div>
     </header>

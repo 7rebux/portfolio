@@ -14,10 +14,10 @@ const Navbar = () => {
   return (
     <nav class='select-none' aria-expanded={expanded()}>
       {/* Default navbar */}
-      <ul class='hidden sm:flex gap-8 px-8 py-3 rounded-full border border-zinc-200 dark:border-zinc-600 bg-surface-light dark:bg-surface-dark'>
+      <ul class='hidden gap-8 rounded-full border border-zinc-200 bg-surface-light px-8 py-3 dark:border-zinc-600 dark:bg-surface-dark sm:flex'>
         <For each={routes}>
           {({ title, path }) => (
-            <li class={active(path) ? 'text-primary font-semibold' : 'text-black dark:text-white'}>
+            <li class={active(path) ? 'font-semibold text-primary' : 'text-black dark:text-white'}>
               <A href={path}>{title}</A>
             </li>
           )}
@@ -26,7 +26,7 @@ const Navbar = () => {
 
       {/* Mobile menu button */}
       <button
-        class='sm:hidden block px-7 py-2 text-sm text-black dark:text-white rounded-full border border-zinc-200 dark:border-zinc-600 bg-surface-light dark:bg-surface-dark'
+        class='block rounded-full border border-zinc-200 bg-surface-light px-7 py-2 text-sm text-black dark:border-zinc-600 dark:bg-surface-dark dark:text-white sm:hidden'
         onClick={() => setExpanded(true)}
       >
         Menu
@@ -35,13 +35,13 @@ const Navbar = () => {
       {/* Mobile navbar */}
       <Portal>
         <Show when={expanded()}>
-          <div class='sm:hidden absolute top-0 w-full h-full p-4 backdrop-blur-lg'>
+          <div class='absolute top-0 h-full w-full p-4 backdrop-blur-lg sm:hidden'>
             <div
-              class='flex flex-col rounded-xl border border-zinc-200 dark:border-zinc-600 bg-surface-light dark:bg-surface-dark'
+              class='flex flex-col rounded-xl border border-zinc-200 bg-surface-light dark:border-zinc-600 dark:bg-surface-dark'
               use:clickOutside={() => setExpanded(false)}
             >
               {/* Menu header */}
-              <div class='flex justify-between items-center px-3 py-2 border-b-4 border-double border-zinc-200 dark:border-zinc-600 text-zinc-400 text-sm'>
+              <div class='flex items-center justify-between border-b-4 border-double border-zinc-200 px-3 py-2 text-sm text-zinc-400 dark:border-zinc-600'>
                 Navigation
                 <button onClick={() => setExpanded(false)}>
                   <svg
@@ -50,7 +50,7 @@ const Navbar = () => {
                     viewBox='0 0 24 24'
                     stroke-width='1.5'
                     stroke='currentColor'
-                    class='w-5 h-5 text-black dark:text-white'
+                    class='h-5 w-5 text-black dark:text-white'
                   >
                     <path stroke-linecap='round' stroke-linejoin='round' d='M6 18L18 6M6 6l12 12' />
                   </svg>
@@ -63,8 +63,8 @@ const Navbar = () => {
                   <A
                     class={`
                   ${
-                    active(path) ? 'text-primary font-semibold' : 'text-black dark:text-white'
-                  } p-3 last:border-0 border-b border-zinc-200 dark:border-zinc-600
+                    active(path) ? 'font-semibold text-primary' : 'text-black dark:text-white'
+                  } border-b border-zinc-200 p-3 last:border-0 dark:border-zinc-600
                 `}
                     href={path}
                     onClick={() => setExpanded(false)}

@@ -24,7 +24,7 @@ const Root = () => {
         <Meta charset='utf-8' />
         <Meta name='viewport' content='width=device-width, initial-scale=1' />
       </Head>
-      <Body class='h-screen flex flex-col bg-background-light dark:bg-background-dark'>
+      <Body class='flex h-screen flex-col bg-background-light dark:bg-background-dark'>
         <Suspense>
           <ErrorBoundary>
             <Header />

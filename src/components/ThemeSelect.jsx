@@ -27,7 +27,7 @@ const ThemeSelect = () => {
     >
       {/* Trigger */}
       <button
-        class='flex w-24 justify-center bg-surface-light dark:bg-surface-dark py-2 rounded-full border border-zinc-200 dark:border-zinc-600 capitalize text-sm text-black dark:text-white'
+        class='flex w-24 justify-center rounded-full border border-zinc-200 bg-surface-light py-2 text-sm capitalize text-black dark:border-zinc-600 dark:bg-surface-dark dark:text-white'
         onClick={() => setExpanded(!expanded())}
       >
         {themes[theme()]} {theme()}
@@ -35,11 +35,11 @@ const ThemeSelect = () => {
 
       {/* Content */}
       <Show when={expanded()}>
-        <ul class='absolute w-24 mt-2 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-600'>
+        <ul class='absolute mt-2 w-24 overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-600'>
           <For each={Object.entries(themes)}>
             {([name, icon]) => (
               <li
-                class='border-t first:border-0 border-zinc-200 dark:border-zinc-600 p-2 bg-surface-light dark:bg-surface-dark capitalize text-sm text-black dark:text-white'
+                class='border-t border-zinc-200 bg-surface-light p-2 text-sm capitalize text-black first:border-0 dark:border-zinc-600 dark:bg-surface-dark dark:text-white'
                 onClick={() => handleThemeChange(name)}
               >
                 {icon} {name}
