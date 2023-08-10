@@ -7,12 +7,16 @@ module.exports = {
       colors: {
         primary: '#20A9C7',
         background: {
-          light: '#F2F2F2',
-          dark: '#222222',
+          light: '#FFFFFF',
+          dark: '#080808',
         },
         surface: {
-          light: '#f7f8fa',
-          dark: '#2E2E2E',
+          light: '#F9F9F9',
+          dark: '#161616',
+        },
+        border: {
+          light: '#e4e4e7',
+          dark: '#27272a',
         },
       },
     },

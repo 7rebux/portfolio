@@ -9,7 +9,7 @@ const socials = [
 
 const Footer = () => {
   return (
-    <footer class='mt-auto flex flex-col items-center justify-around gap-5 border-t border-zinc-200 bg-surface-light p-10 dark:border-t-zinc-600 dark:bg-surface-dark sm:flex-row sm:gap-0'>
+    <footer class='mt-auto flex flex-col items-center justify-around gap-5 border-t bg-surface-light p-10 dark:bg-surface-dark sm:flex-row sm:gap-0'>
       {/* Flag */}
       <p class='flex-grow basis-0 text-center' title='Germany'>
         🇩🇪
@@ -23,7 +23,7 @@ const Footer = () => {
         <For each={socials}>
           {({ title, href, Icon }) => (
             <a href={href} target='_blank' title={title}>
-              <Icon class='text-zinc-800 hover:text-black dark:text-zinc-200 hover:dark:text-white' />
+              <Icon class='text-zinc-600 transition hover:scale-110 hover:text-black dark:text-zinc-400 hover:dark:text-white' />
             </a>
           )}
         </For>

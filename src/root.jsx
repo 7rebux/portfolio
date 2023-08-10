@@ -25,15 +25,15 @@ const Root = () => {
         <Meta name='viewport' content='width=device-width, initial-scale=1' />
       </Head>
       <Body class='flex h-screen flex-col bg-background-light dark:bg-background-dark'>
-        <Suspense>
-          <ErrorBoundary>
-            <Header />
+        <ErrorBoundary>
+          <Header />
+          <Suspense>
             <Routes>
               <FileRoutes />
             </Routes>
-            <Footer />
-          </ErrorBoundary>
-        </Suspense>
+          </Suspense>
+          <Footer />
+        </ErrorBoundary>
       </Body>
     </Html>
   );
