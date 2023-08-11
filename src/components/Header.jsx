@@ -3,7 +3,7 @@ import ThemeSelect from './ThemeSelect';
 
 const Header = () => {
   return (
-    <header class='flex items-center justify-between border-b bg-surface-light p-4 dark:bg-surface-dark sm:justify-around sm:border-0 sm:bg-transparent sm:py-8 sm:dark:bg-transparent'>
+    <header class='flex select-none items-center justify-between border-b bg-surface-light p-4 dark:bg-surface-dark sm:justify-around sm:border-0 sm:bg-transparent sm:py-8 sm:dark:bg-transparent'>
       {/* Spacer */}
       <div class='hidden flex-grow basis-0 sm:block' />
 

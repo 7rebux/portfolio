@@ -5,22 +5,22 @@ import { CloseIcon } from './icons';
 import clickOutside from '~/directives/clickOutside';
 import routes from '~/routes.json';
 
-clickOutside;
-
 const Navbar = () => {
   const [expanded, setExpanded] = createSignal(false);
   const location = useLocation();
   const active = (path) => location.pathname === path;
 
+  clickOutside;
+
   return (
-    <nav class='select-none' aria-expanded={expanded()}>
+    <nav aria-expanded={expanded()}>
       {/* Default navbar */}
       <ul class='hidden gap-8 rounded-full border bg-surface-light px-8 py-3 dark:bg-surface-dark sm:flex'>
         <For each={routes}>
           {({ title, path }) => (
             <li
               aria-selected={active(path)}
-              class='text-black aria-selected:font-semibold aria-selected:text-primary dark:text-white aria-selected:dark:text-primary'
+              class='text-black transition hover:text-primary aria-selected:font-semibold aria-selected:text-primary dark:text-white hover:dark:text-primary aria-selected:dark:text-primary'
             >
               <A href={path}>{title}</A>
             </li>
@@ -37,9 +37,9 @@ const Navbar = () => {
       </button>
 
       {/* Mobile navbar */}
-      <Portal>
+      <Portal mount={document.getElementById('modal')}>
         <Show when={expanded()}>
-          <div class='absolute top-0 h-full w-full p-4 backdrop-blur-lg backdrop-brightness-75 sm:hidden'>
+          <div class='h-screen w-screen p-4 backdrop-blur-lg backdrop-brightness-75 sm:hidden'>
             <div
               class='flex flex-col rounded-xl border bg-surface-light dark:bg-surface-dark'
               use:clickOutside={() => setExpanded(false)}

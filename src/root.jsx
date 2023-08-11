@@ -17,7 +17,7 @@ import './root.css';
 
 const Root = () => {
   return (
-    <Html lang='en'>
+    <Html lang='en' dir='ltr'>
       <Head>
         <Title>Nils Osswald</Title>
         <Link rel='icon' href='/favicon.ico' />
@@ -33,6 +33,7 @@ const Root = () => {
             </Routes>
           </Suspense>
           <Footer />
+          <div class='absolute left-0 top-0' id='modal' />
         </ErrorBoundary>
       </Body>
     </Html>

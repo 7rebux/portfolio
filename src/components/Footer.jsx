@@ -1,10 +1,11 @@
 import { For } from 'solid-js';
 import { EmailIcon, GitHubIcon, LinkedInIcon } from './icons';
+import { Dynamic } from 'solid-js/web';
 
 const socials = [
-  { title: 'GitHub', href: 'https://github.com/7rebux', Icon: GitHubIcon },
-  { title: 'LinkedIn', href: 'https://de.linkedin.com/', Icon: LinkedInIcon },
-  { title: 'E-Mail', href: 'mailto:contact@nilsosswald.de', Icon: EmailIcon },
+  { title: 'GitHub', href: 'https://github.com/7rebux', icon: GitHubIcon },
+  { title: 'LinkedIn', href: 'https://de.linkedin.com/', icon: LinkedInIcon },
+  { title: 'E-Mail', href: 'mailto:contact@nilsosswald.de', icon: EmailIcon },
 ];
 
 const Footer = () => {
@@ -21,9 +22,12 @@ const Footer = () => {
       {/* Socials */}
       <div class='inline-flex flex-grow basis-0 justify-center gap-4'>
         <For each={socials}>
-          {({ title, href, Icon }) => (
+          {({ title, href, icon }) => (
             <a href={href} target='_blank' title={title}>
-              <Icon class='text-zinc-600 transition hover:scale-110 hover:text-black dark:text-zinc-400 hover:dark:text-white' />
+              <Dynamic
+                component={icon}
+                class='text-zinc-600 transition hover:scale-110 hover:text-black dark:text-zinc-400 hover:dark:text-white'
+              />
             </a>
           )}
         </For>
