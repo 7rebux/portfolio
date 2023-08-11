@@ -12,7 +12,9 @@ module.exports = {
         },
         surface: {
           light: '#F9F9F9',
+          lighter: '#fdfdfd',
           dark: '#161616',
+          darker: '#0f0f0f',
         },
         border: {
           light: '#e4e4e7',

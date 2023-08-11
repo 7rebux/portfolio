@@ -1,7 +1,7 @@
 import { For, Show, createSignal } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { A, useLocation } from 'solid-start';
-import { CloseIcon } from './icons';
+import { CloseIcon, HamburgerMenu } from './icons';
 import clickOutside from '~/directives/clickOutside';
 import routes from '~/routes.json';
 
@@ -20,7 +20,7 @@ const Navbar = () => {
           {({ title, path }) => (
             <li
               aria-selected={active(path)}
-              class='text-black transition hover:text-primary aria-selected:font-semibold aria-selected:text-primary dark:text-white hover:dark:text-primary aria-selected:dark:text-primary'
+              class='cursor-pointer text-black transition hover:text-primary aria-selected:font-semibold aria-selected:text-primary dark:text-white hover:dark:text-primary aria-selected:dark:text-primary'
             >
               <A href={path}>{title}</A>
             </li>
@@ -30,9 +30,10 @@ const Navbar = () => {
 
       {/* Mobile menu button */}
       <button
-        class='block rounded-full border bg-surface-light px-7 py-2 text-sm text-black dark:bg-surface-dark dark:text-white sm:hidden'
+        class='bg-surface-lighter dark:bg-surface-darker flex w-24 items-center justify-center gap-2 rounded-full border py-2 text-sm text-black dark:text-white sm:hidden'
         onClick={() => setExpanded(true)}
       >
+        <HamburgerMenu />
         Menu
       </button>
 
@@ -41,14 +42,14 @@ const Navbar = () => {
         <Show when={expanded()}>
           <div class='h-screen w-screen p-4 backdrop-blur-lg backdrop-brightness-75 sm:hidden'>
             <div
-              class='flex flex-col rounded-xl border bg-surface-light dark:bg-surface-dark'
+              class='flex flex-col overflow-hidden rounded-xl border bg-surface-light dark:bg-surface-dark'
               use:clickOutside={() => setExpanded(false)}
             >
               {/* Menu header */}
-              <div class='flex items-center justify-between border-b-4 border-double px-3 py-2 text-sm text-zinc-400'>
+              <div class='flex items-center justify-between px-3 py-2 text-sm text-zinc-400'>
                 Navigation
                 <button onClick={() => setExpanded(false)}>
-                  <CloseIcon class='text-zinc-800 hover:text-black dark:text-zinc-200 hover:dark:text-white' />
+                  <CloseIcon class='text-zinc-800 transition hover:text-black dark:text-zinc-200 hover:dark:text-white' />
                 </button>
               </div>
 
@@ -56,7 +57,7 @@ const Navbar = () => {
               <For each={routes}>
                 {({ title, path }) => (
                   <A
-                    class='border-b p-3 text-black last:border-0 aria-selected:font-semibold aria-selected:text-primary dark:text-white aria-selected:dark:text-primary'
+                    class='hover:bg-surface-lighter hover:dark:bg-surface-darker border-b bg-surface-light p-3 text-black transition last:border-0 aria-selected:font-semibold aria-selected:text-primary dark:bg-surface-dark dark:text-white aria-selected:dark:text-primary'
                     href={path}
                     aria-selected={active(path)}
                     onClick={() => setExpanded(false)}

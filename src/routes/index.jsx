@@ -1,6 +1,6 @@
 const About = () => {
   return (
-    <main>
+    <main class='p-5'>
       <div class='text-4xl font-bold leading-snug text-black dark:text-white'>
         <p>Hey There! 👋</p>
         <p>

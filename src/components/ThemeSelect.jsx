@@ -30,7 +30,7 @@ const ThemeSelect = () => {
     >
       {/* Trigger */}
       <button
-        class='flex w-24 items-center justify-center gap-2 rounded-full border bg-surface-light py-2 text-sm capitalize text-black dark:bg-surface-dark dark:text-white'
+        class='bg-surface-lighter dark:bg-surface-darker flex w-24 items-center justify-center gap-2 rounded-full border py-2 text-sm capitalize text-black dark:text-white sm:bg-surface-light sm:dark:bg-surface-dark'
         onClick={() => setExpanded(!expanded())}
         aria-label={theme()}
       >
@@ -44,11 +44,11 @@ const ThemeSelect = () => {
           <For each={Object.entries(themes)}>
             {([name, icon]) => (
               <li
-                class='flex items-center gap-2 border-t bg-surface-light p-2 text-sm capitalize text-black first:border-0 aria-selected:font-semibold aria-selected:text-primary dark:bg-surface-dark dark:text-white aria-selected:dark:text-primary'
+                class='hover:dark:bg-surface-darker hover:bg-surface-lighter flex items-center gap-2 border-t bg-surface-light p-2 text-sm capitalize text-black transition first:border-0 aria-selected:font-semibold aria-selected:text-primary dark:bg-surface-dark dark:text-white aria-selected:dark:text-primary'
                 aria-selected={theme() === name}
                 onClick={() => handleThemeChange(name)}
               >
-                <Dynamic component={icon} class='text-black dark:text-white' />
+                <Dynamic component={icon} />
                 {name}
               </li>
             )}
