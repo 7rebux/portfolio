@@ -23,6 +23,14 @@ const Root = () => {
         <Link rel='icon' href='/favicon.ico' />
         <Meta charset='utf-8' />
         <Meta name='viewport' content='width=device-width, initial-scale=1' />
+        <Meta name='theme-color' content='#4287f5' />
+
+        {/* Meta tags */}
+        <Meta property='og:title' content='Nils Osswald' />
+        <Meta property='og:type' content='website' />
+        <Meta property='og:url' content='https://nilsosswald.de' />
+        <Meta property='og:image' content='https://www.nilsosswald.de/favicon.ico' />
+        <Meta property='og:description' content='Personal portfolio of Nils Osswald' />
       </Head>
       <Body class='flex h-screen flex-col bg-background-light dark:bg-background-dark'>
         <ErrorBoundary>
