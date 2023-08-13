@@ -1,0 +1,14 @@
+[
+  {
+    "title": "League Tools",
+    "href": "https://github.com/7rebux/league-tools",
+    "description": "A cross-platform desktop app with many League Client exploits (e.g profile customization)",
+    "stack": ["TypeScript", "Sass", "React", "Electron", "Webpack"]
+  },
+  {
+    "title": "Portfolio",
+    "href": "https://github.com/7rebux/portfolio",
+    "description": "The website you are currently looking at",
+    "stack": ["JavaScript", "Solid", "Tailwind"]
+  }
+]
