@@ -25,12 +25,13 @@ const ThemeSelect = () => {
     <div
       class='cursor-pointer'
       use:clickOutside={() => setExpanded(false)}
+      aria-haspopup={true}
       aria-expanded={expanded()}
       aria-label='Select theme'
     >
       {/* Trigger */}
       <button
-        class='bg-surface-lighter dark:bg-surface-darker flex w-24 items-center justify-center gap-2 rounded-full border py-2 text-sm capitalize text-black dark:text-white sm:bg-surface-light sm:dark:bg-surface-dark'
+        class='flex w-24 items-center justify-center gap-2 rounded-full border bg-surface-lighter py-2 text-sm capitalize text-black dark:bg-surface-darker dark:text-white sm:bg-surface-light sm:dark:bg-surface-dark'
         onClick={() => setExpanded(!expanded())}
         aria-label={theme()}
       >
@@ -40,11 +41,16 @@ const ThemeSelect = () => {
 
       {/* Content */}
       <Show when={expanded()}>
-        <ul class='absolute mt-2 w-24 overflow-hidden rounded-xl border'>
+        <ul
+          role='listbox'
+          aria-aria-orientation='vertical'
+          class='absolute mt-2 w-24 overflow-hidden rounded-xl border'
+        >
           <For each={Object.entries(themes)}>
             {([name, icon]) => (
               <li
-                class='hover:dark:bg-surface-darker hover:bg-surface-lighter flex items-center gap-2 border-t bg-surface-light p-2 text-sm capitalize text-black transition first:border-0 aria-selected:font-semibold aria-selected:text-primary dark:bg-surface-dark dark:text-white aria-selected:dark:text-primary'
+                class='flex items-center gap-2 border-t bg-surface-light p-2 text-sm capitalize text-black transition first:border-0 hover:bg-surface-lighter aria-selected:font-semibold aria-selected:text-primary dark:bg-surface-dark dark:text-white hover:dark:bg-surface-darker aria-selected:dark:text-primary'
+                role='option'
                 aria-selected={theme() === name}
                 onClick={() => handleThemeChange(name)}
               >
