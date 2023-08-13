@@ -1,0 +1,6 @@
+{
+  "languages": ["Kotlin", "Java", "TypeScript", "JavaScript", "Sass"],
+  "databases": ["MySQL"],
+  "frameworks": ["React", "ReactNative", "Expo", "Solid", "Electron"],
+  "tools": ["IntelliJ Idea", "Figma", "Git"]
+}
