@@ -1,11 +1,12 @@
 import { For } from 'solid-js';
 import { EmailIcon, GitHubIcon, LinkedInIcon } from './icons';
 import { Dynamic } from 'solid-js/web';
+import socialLinks from '~/socials.json';
 
 const socials = [
-  { title: 'GitHub', href: 'https://github.com/7rebux', icon: GitHubIcon },
-  { title: 'LinkedIn', href: 'https://de.linkedin.com/', icon: LinkedInIcon },
-  { title: 'E-Mail', href: 'mailto:contact@nilsosswald.de', icon: EmailIcon },
+  { title: 'GitHub', href: socialLinks.github, icon: GitHubIcon },
+  { title: 'LinkedIn', href: socialLinks.linkedin, icon: LinkedInIcon },
+  { title: 'E-Mail', href: socialLinks.email, icon: EmailIcon },
 ];
 
 const Footer = () => {
