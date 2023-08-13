@@ -1,5 +1,5 @@
 import { For } from 'solid-js';
-import { ExternalLink, GitHubIcon } from '~/components/icons';
+import { ExternalLinkIcon, GitHubIcon } from '~/components/icons';
 import { github } from '~/socials.json';
 import projects from '~/projects.json';
 
@@ -13,7 +13,7 @@ const Projects = () => {
               <div class='mb-3 inline-flex items-center gap-1 text-lg font-semibold'>
                 {title}
                 <a class='text-primary' href={href} target='_blank'>
-                  <ExternalLink />
+                  <ExternalLinkIcon />
                 </a>
               </div>
               <p class='mb-4'>{description}</p>

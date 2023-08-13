@@ -1,7 +1,7 @@
 import { For, Show, createSignal } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { A, useLocation } from 'solid-start';
-import { CloseIcon, HamburgerMenu } from './icons';
+import { CloseIcon, HamburgerMenuIcon } from './icons';
 import clickOutside from '~/directives/clickOutside';
 import routes from '~/routes.json';
 
@@ -30,10 +30,10 @@ const Navbar = () => {
 
       {/* Mobile menu button */}
       <button
-        class='bg-surface-lighter dark:bg-surface-darker flex w-24 items-center justify-center gap-2 rounded-full border py-2 text-sm text-black dark:text-white sm:hidden'
+        class='flex w-24 items-center justify-center gap-2 rounded-full border bg-surface-lighter py-2 text-sm text-black dark:bg-surface-darker dark:text-white sm:hidden'
         onClick={() => setExpanded(true)}
       >
-        <HamburgerMenu />
+        <HamburgerMenuIcon />
         Menu
       </button>
 
@@ -57,7 +57,7 @@ const Navbar = () => {
               <For each={routes}>
                 {({ title, path }) => (
                   <A
-                    class='hover:bg-surface-lighter hover:dark:bg-surface-darker border-b bg-surface-light p-3 text-black transition last:border-0 aria-selected:font-semibold aria-selected:text-primary dark:bg-surface-dark dark:text-white aria-selected:dark:text-primary'
+                    class='border-b bg-surface-light p-3 text-black transition last:border-0 hover:bg-surface-lighter aria-selected:font-semibold aria-selected:text-primary dark:bg-surface-dark dark:text-white hover:dark:bg-surface-darker aria-selected:dark:text-primary'
                     href={path}
                     aria-selected={active(path)}
                     onClick={() => setExpanded(false)}

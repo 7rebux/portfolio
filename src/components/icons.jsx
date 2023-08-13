@@ -138,7 +138,7 @@ export function DesktopIcon(props) {
   );
 }
 
-export function HamburgerMenu(props) {
+export function HamburgerMenuIcon(props) {
   return (
     <svg
       width='15'
@@ -158,7 +158,7 @@ export function HamburgerMenu(props) {
   );
 }
 
-export function ExternalLink(props) {
+export function ExternalLinkIcon(props) {
   return (
     <svg
       width='15'
