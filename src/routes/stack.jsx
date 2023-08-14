@@ -1,5 +1,5 @@
 import { For } from 'solid-js';
-import stack from '~/stack.json';
+import stack from '~/data/stack.json';
 
 const Stack = () => {
   return (

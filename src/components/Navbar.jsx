@@ -3,7 +3,7 @@ import { Portal } from 'solid-js/web';
 import { A, useLocation } from 'solid-start';
 import { CloseIcon, HamburgerMenuIcon } from './icons';
 import clickOutside from '~/directives/clickOutside';
-import routes from '~/routes.json';
+import routes from '~/routes/routes.json';
 
 const Navbar = () => {
   const [expanded, setExpanded] = createSignal(false);

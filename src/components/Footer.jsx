@@ -1,7 +1,7 @@
 import { For } from 'solid-js';
 import { EmailIcon, GitHubIcon, LinkedInIcon } from './icons';
 import { Dynamic } from 'solid-js/web';
-import socialLinks from '~/socials.json';
+import socialLinks from '~/data/socials.json';
 
 const socials = [
   { title: 'GitHub', href: socialLinks.github, icon: GitHubIcon },

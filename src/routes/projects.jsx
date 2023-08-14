@@ -1,7 +1,7 @@
 import { For } from 'solid-js';
 import { ExternalLinkIcon, GitHubIcon } from '~/components/icons';
-import { github } from '~/socials.json';
-import projects from '~/projects.json';
+import { github } from '~/data/socials.json';
+import projects from '~/data/projects.json';
 
 const Projects = () => {
   return (
