@@ -18,7 +18,7 @@ const Projects = () => {
               </div>
               <p class='mb-4'>{description}</p>
               <p class='mb-5 text-zinc-500'>[ Image(s) placeholder ]</p>
-              <ul class='inline-flex gap-2'>
+              <ul class='inline-flex flex-wrap gap-2'>
                 <For each={stack}>
                   {(entry) => (
                     <li class='rounded-full border bg-surface-lighter px-3 py-1 text-zinc-600 dark:bg-surface-darker dark:text-zinc-400'>
