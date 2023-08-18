@@ -5,8 +5,8 @@ import projects from '~/data/projects.json';
 
 const Projects = () => {
   return (
-    <main class='flex w-full flex-col items-center p-5 text-black dark:text-white'>
-      <div class='grid grid-cols-1 gap-6 lg:grid-cols-2 xl:w-4/5 2xl:w-3/5'>
+    <div class='flex w-full flex-col items-center text-black dark:text-white'>
+      <div class='grid grid-cols-1 gap-6 lg:grid-cols-2'>
         <For each={projects}>
           {({ title, href, description, stack }) => (
             <div class='h-fit rounded-xl border bg-surface-light p-4 dark:bg-surface-dark'>
@@ -42,7 +42,7 @@ const Projects = () => {
           GitHub
         </a>
       </p>
-    </main>
+    </div>
   );
 };
 

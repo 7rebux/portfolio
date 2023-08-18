@@ -1,14 +1,12 @@
 const About = () => {
   return (
-    <main class='p-5'>
-      <div class='text-4xl font-bold leading-snug text-black dark:text-white'>
-        <p>Hey There! 👋</p>
-        <p>
-          I'm <span class='text-primary'>Nils</span>, A Full Stack
-        </p>
-        <p>Software Engineer</p>
-      </div>
-    </main>
+    <div class='text-4xl font-bold leading-snug text-black dark:text-white'>
+      <p>Hey There! 👋</p>
+      <p>
+        I'm <span class='text-primary'>Nils</span>, A Full Stack
+      </p>
+      <p>Software Engineer</p>
+    </div>
   );
 };
 

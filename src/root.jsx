@@ -44,12 +44,16 @@ const Root = () => {
       </Head>
       <Body class='flex h-screen flex-col bg-background-light dark:bg-background-dark'>
         <ErrorBoundary>
-          <Header />
-          <Suspense>
-            <Routes>
-              <FileRoutes />
-            </Routes>
-          </Suspense>
+          <div class='mx-0 lg:mx-20 xl:mx-40 2xl:mx-60'>
+            <Header />
+            <main class='p-4'>
+              <Suspense>
+                <Routes>
+                  <FileRoutes />
+                </Routes>
+              </Suspense>
+            </main>
+          </div>
           <Footer />
           <div class='absolute left-0 top-0' id='modal' />
         </ErrorBoundary>
