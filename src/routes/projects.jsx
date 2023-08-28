@@ -17,7 +17,20 @@ const Projects = () => {
                 </a>
               </div>
               <p class='mb-4'>{description}</p>
-              <p class='mb-5 text-zinc-500'>[ Image(s) placeholder ]</p>
+              <div class='mb-4 flex gap-2 overflow-scroll'>
+                <img
+                  class='max-h-[200px] rounded-lg'
+                  src='https://fastly.picsum.photos/id/1051/400/250.jpg?hmac=pPJwSAd-HgkNs8ceqM4dS1scqVWlnEpsvUVJ-6EYwPQ'
+                />
+                <img
+                  class='max-h-[200px] rounded-lg'
+                  src='https://fastly.picsum.photos/id/1051/400/250.jpg?hmac=pPJwSAd-HgkNs8ceqM4dS1scqVWlnEpsvUVJ-6EYwPQ'
+                />
+                <img
+                  class='max-h-[200px] rounded-lg'
+                  src='https://fastly.picsum.photos/id/1051/400/250.jpg?hmac=pPJwSAd-HgkNs8ceqM4dS1scqVWlnEpsvUVJ-6EYwPQ'
+                />
+              </div>
               <ul class='inline-flex flex-wrap gap-2'>
                 <For each={stack}>
                   {(entry) => (
