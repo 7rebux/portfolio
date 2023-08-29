@@ -1,4 +1,4 @@
-import { For } from 'solid-js';
+import { For, Show } from 'solid-js';
 import { ExternalLinkIcon, GitHubIcon } from '~/components/icons';
 import { github } from '~/data/socials.json';
 import projects from '~/data/projects.json';
@@ -8,7 +8,7 @@ const Projects = () => {
     <div class='flex w-full flex-col items-center text-black dark:text-white'>
       <div class='grid grid-cols-1 gap-6 lg:grid-cols-2'>
         <For each={projects}>
-          {({ title, href, description, stack }) => (
+          {({ title, href, images, description, stack }) => (
             <div class='h-fit rounded-xl border bg-surface-light p-4 dark:bg-surface-dark'>
               <div class='mb-3 inline-flex items-center gap-1 text-lg font-semibold'>
                 {title}
@@ -17,20 +17,22 @@ const Projects = () => {
                 </a>
               </div>
               <p class='mb-4'>{description}</p>
-              <div class='mb-4 flex gap-2 overflow-scroll'>
-                <img
-                  class='max-h-[200px] rounded-lg'
-                  src='https://fastly.picsum.photos/id/1051/400/250.jpg?hmac=pPJwSAd-HgkNs8ceqM4dS1scqVWlnEpsvUVJ-6EYwPQ'
-                />
-                <img
-                  class='max-h-[200px] rounded-lg'
-                  src='https://fastly.picsum.photos/id/1051/400/250.jpg?hmac=pPJwSAd-HgkNs8ceqM4dS1scqVWlnEpsvUVJ-6EYwPQ'
-                />
-                <img
-                  class='max-h-[200px] rounded-lg'
-                  src='https://fastly.picsum.photos/id/1051/400/250.jpg?hmac=pPJwSAd-HgkNs8ceqM4dS1scqVWlnEpsvUVJ-6EYwPQ'
-                />
-              </div>
+              <Show
+                when={images.length !== 0}
+                fallback={<p class='mb-4 text-zinc-500'>No preview</p>}
+              >
+                <div class='drag mb-4 flex select-none gap-4 overflow-scroll'>
+                  <For each={images}>
+                    {(src) => (
+                      <img
+                        class='max-h-[200px] cursor-pointer rounded-lg'
+                        src={src}
+                        draggable={false}
+                      />
+                    )}
+                  </For>
+                </div>
+              </Show>
               <ul class='inline-flex flex-wrap gap-2'>
                 <For each={stack}>
                   {(entry) => (
