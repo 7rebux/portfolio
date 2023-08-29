@@ -1,22 +1,33 @@
-import { For, Show } from 'solid-js';
+import { For, Show, createSignal } from 'solid-js';
 import { ExternalLinkIcon, GitHubIcon } from '~/components/icons';
 import { github } from '~/data/socials.json';
 import projects from '~/data/projects.json';
+import clickOutside from '~/directives/clickOutside';
 
 const Projects = () => {
+  const [preview, setPreview] = createSignal(null);
+
+  clickOutside;
+
   return (
     <div class='flex w-full flex-col items-center text-black dark:text-white'>
+      {/* Project list */}
       <div class='grid grid-cols-1 gap-6 lg:grid-cols-2'>
         <For each={projects}>
           {({ title, href, images, description, stack }) => (
             <div class='h-fit rounded-xl border bg-surface-light p-4 dark:bg-surface-dark'>
+              {/* Title */}
               <div class='mb-3 inline-flex items-center gap-1 text-lg font-semibold'>
                 {title}
                 <a class='text-primary' href={href} target='_blank'>
                   <ExternalLinkIcon />
                 </a>
               </div>
+
+              {/* Description */}
               <p class='mb-4'>{description}</p>
+
+              {/* Images */}
               <Show
                 when={images.length !== 0}
                 fallback={<p class='mb-4 text-zinc-500'>No preview</p>}
@@ -28,11 +39,14 @@ const Projects = () => {
                         class='max-h-[200px] cursor-pointer rounded-lg'
                         src={src}
                         draggable={false}
+                        onclick={() => setPreview(src)}
                       />
                     )}
                   </For>
                 </div>
               </Show>
+
+              {/* Stack */}
               <ul class='inline-flex flex-wrap gap-2'>
                 <For each={stack}>
                   {(entry) => (
@@ -46,6 +60,8 @@ const Projects = () => {
           )}
         </For>
       </div>
+
+      {/* GitHub link */}
       <p class='mt-8'>
         Find more projects on{' '}
         <a
@@ -57,6 +73,15 @@ const Projects = () => {
           GitHub
         </a>
       </p>
+
+      {/* Image preview */}
+      <Portal mount={document.getElementById('modal')}>
+        <Show when={preview()}>
+          <div class='flex h-screen w-screen items-center justify-center p-4 backdrop-blur-lg backdrop-brightness-75'>
+            <img src={preview()} use:clickOutside={() => setPreview(null)} />
+          </div>
+        </Show>
+      </Portal>
     </div>
   );
 };
