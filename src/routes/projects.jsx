@@ -4,6 +4,12 @@ import { github } from '~/data/socials.json';
 import projects from '~/data/projects.json';
 import clickOutside from '~/directives/clickOutside';
 
+const languageToColor = {
+  TypeScript: 'text-[#007ACC] border-[#007ACC]',
+  JavaScript: 'text-[#f7df1e] border-[#f7df1e]',
+  Sass: 'text-[#c69] border-[#c69]',
+};
+
 const Projects = () => {
   const [preview, setPreview] = createSignal(null);
 
@@ -50,7 +56,11 @@ const Projects = () => {
               <ul class='inline-flex flex-wrap gap-2'>
                 <For each={stack}>
                   {(entry) => (
-                    <li class='rounded-full border bg-surface-lighter px-3 py-1 text-zinc-600 dark:bg-surface-darker dark:text-zinc-400'>
+                    <li
+                      class={`${
+                        languageToColor[entry] ?? 'text-zinc-600 dark:text-zinc-400'
+                      } rounded-full border bg-surface-lighter px-3 py-1 dark:bg-surface-darker`}
+                    >
                       {entry}
                     </li>
                   )}
