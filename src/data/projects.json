@@ -16,5 +16,12 @@
     "description": "The website you are currently looking at",
     "images": [],
     "stack": ["JavaScript", "Solid", "Tailwind"]
+  },
+  {
+    "title": "Jump and Run",
+    "href": "https://github.com/7rebux/jump-and-run",
+    "description": "A minecraft server plugin for as precise as possible parkour speedrunning",
+    "images": ["images/jump-and-run/menu.png"],
+    "stack": ["Kotlin", "SQL", "Exposed", "Spigot"]
   }
 ]

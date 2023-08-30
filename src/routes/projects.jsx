@@ -8,6 +8,7 @@ const languageToColor = {
   TypeScript: 'text-[#007ACC] border-[#007ACC]',
   JavaScript: 'text-[#f7df1e] border-[#f7df1e]',
   Sass: 'text-[#c69] border-[#c69]',
+  Kotlin: 'text-[#B125EA] border-[#B125EA]',
 };
 
 const Projects = () => {
