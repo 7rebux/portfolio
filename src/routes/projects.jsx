@@ -39,15 +39,17 @@ const Projects = () => {
                 when={images.length !== 0}
                 fallback={<p class='mb-4 text-zinc-500'>No preview</p>}
               >
-                <div class='drag mb-4 flex select-none gap-4 overflow-scroll'>
+                <div class='mb-4 flex select-none snap-x snap-mandatory gap-4 overflow-x-auto'>
                   <For each={images}>
                     {(src) => (
-                      <img
-                        class='max-h-[200px] cursor-pointer rounded-lg'
-                        src={src}
-                        draggable={false}
-                        onclick={() => setPreview(src)}
-                      />
+                      <div class='shrink-0 snap-center snap-always'>
+                        <img
+                          class='max-h-[200px] cursor-pointer rounded-lg'
+                          src={src}
+                          draggable={false}
+                          onclick={() => setPreview(src)}
+                        />
+                      </div>
                     )}
                   </For>
                 </div>
