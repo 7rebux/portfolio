@@ -44,7 +44,7 @@ const Projects = () => {
                     {(src) => (
                       <div class='shrink-0 snap-center snap-always'>
                         <img
-                          class='max-h-[200px] cursor-pointer rounded-lg'
+                          class='max-h-[200px] cursor-pointer rounded-lg border'
                           src={src}
                           draggable={false}
                           onclick={() => setPreview(src)}
