@@ -42,9 +42,9 @@ const Root = () => {
         <Meta property='twitter:description' content='Personal portfolio of Nils Osswald' />
         <Meta property='twitter:image' content='https://www.nilsosswald.de/favicon.ico' />
       </Head>
-      <Body class='flex h-screen flex-col bg-background-light dark:bg-background-dark'>
+      <Body class='flex min-h-screen flex-col bg-background-light dark:bg-background-dark'>
         <ErrorBoundary>
-          <div class='mx-0 lg:mx-20 xl:mx-40 2xl:mx-60'>
+          <div class='mx-0 flex-1 lg:mx-20 xl:mx-40 2xl:mx-60'>
             <Header />
             <main class='p-4'>
               <Suspense>

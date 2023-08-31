@@ -12,8 +12,8 @@ const socials = [
 // TODO: center middle item
 const Footer = () => {
   return (
-    <footer class='mt-auto border-t bg-surface-light dark:bg-surface-dark lg:px-20 xl:px-40 2xl:px-60'>
-      <div class='mt-auto flex flex-col items-center justify-between gap-5 px-4 py-10 sm:flex-row'>
+    <footer class='border-t bg-surface-light dark:bg-surface-dark lg:px-20 xl:px-40 2xl:px-60'>
+      <div class='flex flex-col items-center justify-between gap-5 px-4 py-10 sm:flex-row'>
         {/* Flag */}
         <p title='Germany'>🇩🇪</p>
 
