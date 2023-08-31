@@ -1,4 +1,4 @@
-import { For, Show, createSignal } from 'solid-js';
+import { For, Show, createSignal, createEffect } from 'solid-js';
 import { ExternalLinkIcon, GitHubIcon } from '~/components/icons';
 import { github } from '~/data/socials.json';
 import projects from '~/data/projects.json';
@@ -15,6 +15,10 @@ const Projects = () => {
   const [preview, setPreview] = createSignal(null);
 
   clickOutside;
+
+  createEffect(() => {
+    document.body.style.overflow = preview() ? 'hidden' : 'visible';
+  }, preview);
 
   return (
     <div class='flex w-full flex-col items-center text-black dark:text-white'>

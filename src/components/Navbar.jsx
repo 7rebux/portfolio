@@ -1,4 +1,4 @@
-import { For, Show, createSignal } from 'solid-js';
+import { For, Show, createEffect, createSignal } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { A, useLocation } from 'solid-start';
 import { CloseIcon, HamburgerMenuIcon } from './icons';
@@ -11,6 +11,10 @@ const Navbar = () => {
   const active = (path) => location.pathname === path;
 
   clickOutside;
+
+  createEffect(() => {
+    document.body.style.overflow = expanded() ? 'hidden' : 'visible';
+  }, expanded);
 
   return (
     <nav aria-expanded={expanded()}>

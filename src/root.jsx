@@ -55,7 +55,7 @@ const Root = () => {
             </main>
           </div>
           <Footer />
-          <div class='absolute left-0 top-0' id='modal' />
+          <div class='fixed' id='modal' />
         </ErrorBoundary>
       </Body>
     </Html>
