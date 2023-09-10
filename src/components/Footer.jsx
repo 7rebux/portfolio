@@ -27,7 +27,7 @@ const Footer = () => {
               <a href={href} target='_blank' title={title}>
                 <Dynamic
                   component={icon}
-                  class='text-zinc-600 transition hover:scale-110 hover:text-black dark:text-zinc-400 hover:dark:text-white'
+                  class='text-zinc-600 transition hover:text-black dark:text-zinc-400 hover:dark:text-white'
                 />
               </a>
             )}
