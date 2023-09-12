@@ -16,6 +16,7 @@ const About = () => {
           </div>
           <div class='max-w-[60ch] text-black dark:text-white'>
             <p>
+              {/* TODO: Update text */}
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste enim rem, laudantium
               nostrum aut ea nihil deserunt omnis corporis vitae obcaecati quidem a soluta, sed
               adipisci, atque cupiditate? Cupiditate, vel?
@@ -64,8 +65,11 @@ const About = () => {
       <hr />
 
       {/* Blog posts */}
-      <div>
-        <p class='text-black dark:text-white'>Latest Blog Posts</p>
+      <div class='flex flex-col gap-2'>
+        <p class='text-lg text-black dark:text-white'>Latest Blog Posts</p>
+        <div>
+          <p class='text-zinc-400 dark:text-zinc-600'>Coming soon</p>
+        </div>
       </div>
     </div>
   );
