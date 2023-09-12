@@ -2,104 +2,99 @@
   "Languages": [
     {
       "title": "Kotlin",
-      "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis provident exercitationem architecto?",
+      "description": "Kotlin is my best known programming language. I admire its null safety and string templates in comparison to Java. Additionally, I appreciate its functional programming capabilities.",
       "icon": "https://skillicons.dev/icons?i=kotlin"
     },
     {
       "title": "Java",
-      "description": "",
+      "description": "Java was the first programming language I learned. It offers a straightforward approach and is ideal for backend implementations.",
       "icon": "https://skillicons.dev/icons?i=java"
     },
     {
       "title": "TypeScript",
-      "description": "",
+      "description": "TypeScript is my preferred language for complex web applications. Strong typing is essential when dealing with data from APIs.",
       "icon": "https://skillicons.dev/icons?i=ts"
     },
     {
       "title": "JavaScript",
-      "description": "",
+      "description": "Similar to TypeScript, JavaScript is a versatile language, sometimes favored for its flexibility when type constraints are not necessary.",
       "icon": "https://skillicons.dev/icons?i=js"
     },
     {
+      "title": "Zig",
+      "description": "Zig is my top choice for writing highly efficient and memory-safe code.",
+      "icon": "https://skillicons.dev/icons?i=zig"
+    },
+    {
       "title": "Python",
-      "description": "",
+      "description": "Python is the go-to language for implementing simple algorithms and solving coding challenges with ease.",
       "icon": "https://skillicons.dev/icons?i=py"
     },
     {
       "title": "Sass",
-      "description": "",
+      "description": "Sass is the better CSS for me. It enhances styling capabilities for web development.",
       "icon": "https://skillicons.dev/icons?i=sass"
-    },
-    {
-      "title": "CSS",
-      "description": "",
-      "icon": "https://skillicons.dev/icons?i=css"
-    },
-    {
-      "title": "HTML",
-      "description": "",
-      "icon": "https://skillicons.dev/icons?i=html"
     }
   ],
   "Frameworks": [
     {
       "title": "React",
-      "description": "",
+      "description": "React is my primary framework for modern web applications with stateful user interfaces.",
       "icon": "https://skillicons.dev/icons?i=react"
     },
     {
       "title": "Solid",
-      "description": "",
+      "description": "Solid is similar to React but requires less JavaScript and offers a simpler feature set.",
       "icon": "https://skillicons.dev/icons?i=solidjs"
     },
     {
       "title": "Electron",
-      "description": "",
+      "description": "Electron is my preferred framework for building cross-platform desktop applications with modern features.",
       "icon": "https://skillicons.dev/icons?i=electron"
     },
     {
       "title": "Tailwind",
-      "description": "",
+      "description": "Tailwind is my choice for styling static web pages that don't require extensive custom CSS.",
       "icon": "https://skillicons.dev/icons?i=tailwind"
     },
     {
       "title": "Selenium",
-      "description": "",
+      "description": "Selenium is my tool of choice for web scraping and automation tasks.",
       "icon": "https://skillicons.dev/icons?i=selenium"
     }
   ],
   "Databases": [
     {
-      "title": "MySQL",
-      "description": "",
+      "title": "SQL",
+      "description": "I have extensive experience with SQL RDBMS like MySQL, MariaDB, and SQLite. SQL databases are my choice for quickly storing and retrieving user data and statistics.",
       "icon": "https://skillicons.dev/icons?i=mysql"
     }
   ],
   "Tools": [
     {
-      "title": "IntelliJ Idea",
-      "description": "",
+      "title": "IntelliJ IDEA",
+      "description": "IntelliJ IDEA is my favorite IDE for Java and Kotlin programming. I appreciate its integrations with Docker, databases, and more.",
       "icon": "https://skillicons.dev/icons?i=idea"
     },
     {
       "title": "VS Code",
-      "description": "",
+      "description": "VS Code is my top pick for all things related to web development.",
       "icon": "https://skillicons.dev/icons?i=vscode"
     },
     {
       "title": "Figma",
-      "description": "",
+      "description": "I use Figma to create layouts and components for websites and desktop apps.",
       "icon": "https://skillicons.dev/icons?i=figma"
     },
     {
-      "title": "Git",
-      "description": "",
-      "icon": "https://skillicons.dev/icons?i=git"
+      "title": "GitHub",
+      "description": "GitHub is where I host all my private and public Git repositories.",
+      "icon": "https://skillicons.dev/icons?i=github"
     },
     {
-      "title": "GitHub",
-      "description": "",
-      "icon": "https://skillicons.dev/icons?i=github"
+      "title": "GitHub Actions",
+      "description": "I primarily use GitHub Actions to run tests after commits and deploy updates to various platforms.",
+      "icon": "https://skillicons.dev/icons?i=githubactions"
     }
   ]
 }
