@@ -3,11 +3,10 @@ import socials from '~/data/socials.json';
 
 const About = () => {
   return (
-    <div class='mt-8 flex flex-col gap-10 sm:mt-0'>
+    <div class='mx-0 mt-8 flex flex-col gap-10 sm:mt-0 4xl:mx-64'>
+      {/* Introduction */}
       <div class='flex flex-col-reverse justify-between gap-10 sm:flex-row'>
-        {/* Left */}
         <div class='flex flex-col gap-10 text-center sm:text-left'>
-          {/* Title */}
           <div class='text-4xl font-bold leading-snug text-black dark:text-white'>
             <p>Hey There! 👋</p>
             <p>
@@ -15,8 +14,6 @@ const About = () => {
             </p>
             <p>Software Engineer</p>
           </div>
-
-          {/* Introduction */}
           <div class='max-w-[60ch] text-black dark:text-white'>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste enim rem, laudantium
@@ -25,14 +22,14 @@ const About = () => {
             </p>
           </div>
         </div>
-
-        {/* Right */}
         <div class='flex w-full justify-center sm:w-fit'>
           {/* TODO: Replace this with an image */}
           {/* TODO: Add fancy animation */}
           <div class='h-40 w-40 rounded-full border-2 bg-surface-light dark:bg-surface-dark' />
         </div>
       </div>
+
+      {/* Buttons */}
       <div class='flex w-full justify-center gap-4 sm:justify-normal'>
         <a
           href={socials.email}
@@ -47,7 +44,10 @@ const About = () => {
           See My Work
         </A>
       </div>
+
       <hr />
+
+      {/* Stack */}
       <div class='flex flex-col items-center gap-2 sm:items-start'>
         <img
           src='https://skillicons.dev/icons?i=kotlin,java,js,ts,react,css,tailwind'
@@ -60,7 +60,13 @@ const About = () => {
           </A>
         </p>
       </div>
+
       <hr />
+
+      {/* Blog posts */}
+      <div>
+        <p class='text-black dark:text-white'>Latest Blog Posts</p>
+      </div>
     </div>
   );
 };
