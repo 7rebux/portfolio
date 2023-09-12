@@ -1,6 +1,105 @@
 {
-  "languages": ["Kotlin", "Java", "TypeScript", "JavaScript", "Sass"],
-  "databases": ["MySQL"],
-  "frameworks": ["React", "ReactNative", "Expo", "Solid", "Electron", "Tailwind"],
-  "tools": ["IntelliJ Idea", "VS Code", "Figma", "Git"]
+  "Languages": [
+    {
+      "title": "Kotlin",
+      "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis provident exercitationem architecto?",
+      "icon": "https://skillicons.dev/icons?i=kotlin"
+    },
+    {
+      "title": "Java",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=java"
+    },
+    {
+      "title": "TypeScript",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=ts"
+    },
+    {
+      "title": "JavaScript",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=js"
+    },
+    {
+      "title": "Python",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=py"
+    },
+    {
+      "title": "Sass",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=sass"
+    },
+    {
+      "title": "CSS",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=css"
+    },
+    {
+      "title": "HTML",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=html"
+    }
+  ],
+  "Frameworks": [
+    {
+      "title": "React",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=react"
+    },
+    {
+      "title": "Solid",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=solidjs"
+    },
+    {
+      "title": "Electron",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=electron"
+    },
+    {
+      "title": "Tailwind",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=tailwind"
+    },
+    {
+      "title": "Selenium",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=selenium"
+    }
+  ],
+  "Databases": [
+    {
+      "title": "MySQL",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=mysql"
+    }
+  ],
+  "Tools": [
+    {
+      "title": "IntelliJ Idea",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=idea"
+    },
+    {
+      "title": "VS Code",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=vscode"
+    },
+    {
+      "title": "Figma",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=figma"
+    },
+    {
+      "title": "Git",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=git"
+    },
+    {
+      "title": "GitHub",
+      "description": "",
+      "icon": "https://skillicons.dev/icons?i=github"
+    }
+  ]
 }
