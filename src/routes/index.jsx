@@ -16,10 +16,13 @@ const About = () => {
           </div>
           <div class='max-w-[60ch] text-black dark:text-white'>
             <p>
-              {/* TODO: Update text */}
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste enim rem, laudantium
-              nostrum aut ea nihil deserunt omnis corporis vitae obcaecati quidem a soluta, sed
-              adipisci, atque cupiditate? Cupiditate, vel?
+              I'm a passionate software developer based in Germany. My journey in the world of
+              programming began at the young age of 12, and since then, I've been dedicated to
+              creating elegant and efficient applications. I have a deep appreciation for
+              beautifully designed user interfaces and a strong commitment to optimizing efficiency
+              and performance. My interests extend to algorithms, artificial intelligence, and the
+              strategic world of chess. One of my greatest joys is building tools that simplify not
+              only my life but also the lives of others. Let's connect and collaborate!
             </p>
           </div>
         </div>
