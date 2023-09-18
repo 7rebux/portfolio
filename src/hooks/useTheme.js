@@ -1,8 +1,8 @@
 import { createEffect, createSignal } from 'solid-js';
 
-const useTheme = () => {
-  const [theme, setTheme] = createSignal(localStorage.theme ?? 'system');
+const [theme, setTheme] = createSignal(localStorage.theme ?? 'system');
 
+const useTheme = () => {
   createEffect(() => {
     localStorage.theme = theme();
 
