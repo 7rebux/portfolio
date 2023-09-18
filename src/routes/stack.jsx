@@ -1,4 +1,5 @@
 import { For } from 'solid-js';
+import SkillIcon from '~/components/SkillIcon';
 import stack from '~/data/stack.json';
 
 const Stack = () => {
@@ -14,7 +15,7 @@ const Stack = () => {
                 <For each={entries}>
                   {({ title, description, icon }) => (
                     <li class='flex items-start gap-2'>
-                      <img class='mt-1' src={icon} />
+                      <SkillIcon class='mt-1' src={icon} />
                       <div>
                         <p class='text-black dark:text-white'>{title}</p>
                         <p class='text-zinc-700 dark:text-zinc-300'>{description}</p>

@@ -1,4 +1,5 @@
 import { A } from 'solid-start';
+import SkillIcon from '~/components/SkillIcon';
 import socials from '~/data/socials.json';
 
 const About = () => {
@@ -53,7 +54,7 @@ const About = () => {
 
       {/* Stack */}
       <div class='flex flex-col items-center gap-2 sm:items-start'>
-        <img
+        <SkillIcon
           src='https://skillicons.dev/icons?i=kotlin,java,js,ts,react,css,tailwind'
           alt='Stack'
         />
