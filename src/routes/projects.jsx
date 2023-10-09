@@ -1,8 +1,9 @@
 import { For, Show, createSignal, createEffect } from 'solid-js';
+import { Portal } from 'solid-js/web';
 import { ExternalLinkIcon, GitHubIcon } from '~/components/icons';
-import { github } from '~/data/socials.json';
-import projects from '~/data/projects.json';
 import clickOutside from '~/directives/clickOutside';
+import projects from '~/data/projects.json';
+import { github } from '~/data/socials.json';
 
 const languageToColor = {
   TypeScript: 'text-[#007ACC] border-[#007ACC]',
@@ -14,8 +15,10 @@ const languageToColor = {
 const Projects = () => {
   const [preview, setPreview] = createSignal(null);
 
+  // This is necessary to prevent unused import cleanup
   clickOutside;
 
+  // Prevent scrolling on small screens if preview is open
   createEffect(() => {
     document.body.style.overflow = preview() ? 'hidden' : 'visible';
   }, preview);
@@ -23,10 +26,10 @@ const Projects = () => {
   return (
     <div class='flex w-full flex-col items-center text-black dark:text-white'>
       {/* Project list */}
-      <div class='grid grid-cols-1 gap-6 lg:grid-cols-2'>
+      <div class='columns-1 gap-6 lg:columns-2'>
         <For each={projects}>
           {({ title, href, images, description, stack }) => (
-            <div class='h-fit rounded-xl border bg-surface-light p-4 dark:bg-surface-dark'>
+            <div class='mb-6 inline-block h-fit w-full rounded-xl border bg-surface-light p-4 dark:bg-surface-dark'>
               {/* Title */}
               <div class='mb-3 inline-flex items-center gap-1 text-lg font-semibold'>
                 {title}
@@ -48,10 +51,11 @@ const Projects = () => {
                     {(src) => (
                       <div class='shrink-0 snap-center snap-always'>
                         <img
+                          onclick={() => setPreview(src)}
                           class='max-h-[200px] cursor-pointer rounded-lg border'
                           src={src}
                           draggable={false}
-                          onclick={() => setPreview(src)}
+                          alt='Project preview small image'
                         />
                       </div>
                     )}
@@ -95,7 +99,11 @@ const Projects = () => {
       <Portal mount={document.getElementById('modal')}>
         <Show when={preview()}>
           <div class='flex h-screen w-screen items-center justify-center p-4 backdrop-blur-lg backdrop-brightness-75'>
-            <img src={preview()} use:clickOutside={() => setPreview(null)} />
+            <img
+              use:clickOutside={() => setPreview(null)}
+              src={preview()}
+              alt='Project preview large image'
+            />
           </div>
         </Show>
       </Portal>
