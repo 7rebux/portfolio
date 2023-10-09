@@ -11,6 +11,13 @@
     "stack": ["TypeScript", "Sass", "React", "Electron", "Webpack"]
   },
   {
+    "title": "Jump and Run",
+    "href": "https://github.com/7rebux/jump-and-run",
+    "description": "A minecraft server plugin for as precise as possible parkour speedrunning",
+    "images": ["images/jump-and-run/menu.png", "images/jump-and-run/info.png"],
+    "stack": ["Kotlin", "SQL", "Exposed", "Spigot"]
+  },
+  {
     "title": "Portfolio",
     "href": "https://github.com/7rebux/portfolio",
     "description": "The website you are currently looking at",
@@ -18,10 +25,10 @@
     "stack": ["JavaScript", "Solid", "Tailwind"]
   },
   {
-    "title": "Jump and Run",
-    "href": "https://github.com/7rebux/jump-and-run",
-    "description": "A minecraft server plugin for as precise as possible parkour speedrunning",
-    "images": ["images/jump-and-run/menu.png", "images/jump-and-run/info.png"],
-    "stack": ["Kotlin", "SQL", "Exposed", "Spigot"]
+    "title": "Zess",
+    "href": "https://github.com/7rebux/zess",
+    "description": "Chess related things in zig",
+    "images": [],
+    "stack": ["Zig"]
   }
 ]
