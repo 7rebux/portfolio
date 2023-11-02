@@ -1,8 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{html,js,jsx,ts,tsx}'],
+  content: ['./src/**/*.{html,js,jsx,ts,tsx,md,mdx}'],
   darkMode: 'class',
   theme: {
+    hljs: {
+      theme: 'github-dark',
+    },
     extend: {
       screens: {
         '4xl': '1728px',
@@ -26,5 +29,8 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  safelist: [{
+    pattern: /hljs+/,
+  }],
+  plugins: [require('@tailwindcss/typography'), require('tailwind-highlightjs')],
 };

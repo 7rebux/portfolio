@@ -8,7 +8,13 @@ import routes from '~/data/routes.json';
 const Navbar = () => {
   const [expanded, setExpanded] = createSignal(false);
   const location = useLocation();
-  const active = (path) => location.pathname === path;
+  const active = (path) => {
+    if (path === '/') {
+      return location.pathname === path;
+    } else {
+      return location.pathname.startsWith(path);
+    }
+  };
 
   clickOutside;
 
