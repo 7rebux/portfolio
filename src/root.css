@@ -8,4 +8,13 @@
   ::after {
     @apply border-border-light dark:border-border-dark;
   }
+
+  a[aria-hidden="true"] {
+    text-decoration: none;
+  }
+
+  .icon.icon-link:before {
+    content: '🔗 ';
+    font-size: 15px;
+  }
 }

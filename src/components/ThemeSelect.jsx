@@ -43,7 +43,7 @@ const ThemeSelect = () => {
       <Show when={expanded()}>
         <ul
           role='listbox'
-          aria-aria-orientation='vertical'
+          aria-orientation='vertical'
           class='absolute mt-2 w-24 overflow-hidden rounded-xl border'
         >
           <For each={Object.entries(themes)}>
