@@ -71,17 +71,17 @@ const About = () => {
       <hr />
 
       {/* Blog posts */}
-      <div class='flex flex-col items-center gap-2 sm:items-start'>
-        <p class='text-lg text-black dark:text-white'>Latest Blog Posts</p>
-        <div class='flex flex-col gap-1 text-center sm:text-start'>
+      <div class='flex flex-col items-center gap-2 text-black dark:text-white sm:items-start'>
+        <p class='mb-3 text-xl font-semibold'>Latest Blog Posts</p>
+        <div class='flex flex-col gap-2 sm:text-start'>
           <For each={posts.slice(0, 3)}>
             {({ name, path }) => (
-              <A href={`/blog${path}`} class='text-black dark:text-white'>
-                ● {name}
+              <A href={`/blog${path}`} class='transition hover:text-primary'>
+                • {name}
               </A>
             )}
           </For>
-          <p class='text-center text-zinc-600 dark:text-zinc-400 sm:text-start'>
+          <p class='mt-1 text-center text-zinc-600 dark:text-zinc-400 sm:text-start'>
             View all on my{' '}
             <A href='/blog' class='text-primary'>
               blog page
