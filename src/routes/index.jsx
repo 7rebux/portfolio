@@ -1,6 +1,8 @@
 import { A } from 'solid-start';
 import SkillIcon from '~/components/SkillIcon';
 import socials from '~/data/socials.json';
+import posts from '~/data/posts.json';
+import { For } from 'solid-js';
 
 const About = () => {
   return (
@@ -69,10 +71,22 @@ const About = () => {
       <hr />
 
       {/* Blog posts */}
-      <div class='flex flex-col gap-2'>
+      <div class='flex flex-col items-center gap-2 sm:items-start'>
         <p class='text-lg text-black dark:text-white'>Latest Blog Posts</p>
-        <div>
-          <p class='text-zinc-400 dark:text-zinc-600'>Coming soon</p>
+        <div class='flex flex-col gap-1 text-center sm:text-start'>
+          <For each={posts.slice(0, 3)}>
+            {({ name, path }) => (
+              <A href={`/blog${path}`} class='text-black dark:text-white'>
+                ● {name}
+              </A>
+            )}
+          </For>
+          <p class='text-center text-zinc-600 dark:text-zinc-400 sm:text-start'>
+            View all on my{' '}
+            <A href='/blog' class='text-primary'>
+              blog page
+            </A>
+          </p>
         </div>
       </div>
     </div>

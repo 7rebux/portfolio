@@ -1,10 +1,32 @@
 [
   {
-    "name": "test",
-    "date": "Nov 2, 2023"
+    "name": "Hello World - My first blog post",
+    "path": "/hello-world",
+    "date": "Nov 3, 2023"
   },
   {
-    "name": "invalid",
+    "name": "Hello World",
+    "path": "/hello-world",
+    "date": "Nov 3, 2023"
+  },
+  {
+    "name": "Hello World",
+    "path": "/hello-world",
+    "date": "Nov 3, 2023"
+  },
+  {
+    "name": "Hello World",
+    "path": "/hello-world",
+    "date": "Nov 3, 2023"
+  },
+  {
+    "name": "Hello World",
+    "path": "/hello-world",
+    "date": "Nov 3, 2023"
+  },
+  {
+    "name": "Hello World",
+    "path": "/hello-world",
     "date": "Nov 3, 2023"
   }
 ]
