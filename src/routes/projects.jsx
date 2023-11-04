@@ -10,6 +10,7 @@ const languageToColor = {
   JavaScript: 'text-[#f7df1e] border-[#f7df1e]',
   Sass: 'text-[#c69] border-[#c69]',
   Kotlin: 'text-[#B125EA] border-[#B125EA]',
+  Zig: 'text-[#f7a41d] border-[#f7a41d]',
 };
 
 const Projects = () => {
