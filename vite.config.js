@@ -11,6 +11,9 @@ export default defineConfig({
     markdown({
       rehypePlugins: [rehypeHighlight, rehypeSlug, rehypeAutolinkHeadings],
     }),
-    solid({ adapter: vercel(), ssr: false, extensions: ['.mdx', '.md'] }),
+    solid({
+      adapter: vercel(),
+      extensions: ['.mdx', '.md'],
+    }),
   ],
 });

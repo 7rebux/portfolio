@@ -1,22 +1,13 @@
-import { createEffect, createSignal } from 'solid-js';
+import { createStore } from 'solid-js/store';
 
-const [theme, setTheme] = createSignal(localStorage.theme ?? 'system');
+const [innerTheme, setThemeInner] = createStore({ theme: 'system', systemTheme: false });
 
-const useTheme = () => {
-  createEffect(() => {
-    localStorage.theme = theme();
-
-    if (
-      theme() === 'dark' ||
-      (theme() === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  });
-
-  return [theme, setTheme];
+const setTheme = (newTheme) => {
+  setThemeInner({ ...innerTheme, theme: newTheme });
+  localStorage.theme = newTheme;
 };
 
-export default useTheme;
+const theme = () => innerTheme.theme;
+const systemTheme = () => innerTheme.systemTheme;
+
+export { theme, setTheme, setThemeInner, systemTheme };
