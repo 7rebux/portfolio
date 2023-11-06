@@ -23,7 +23,7 @@
     "vite-plugin-solid-markdown": "^0.0.6"
   },
   "dependencies": {
-    "@solidjs/meta": "^0.28.2",
+    "@solidjs/meta": "^0.28.7",
     "@solidjs/router": "^0.8.2",
     "rehype-autolink-headings": "^7.0.0",
     "rehype-highlight": "^7.0.0",
