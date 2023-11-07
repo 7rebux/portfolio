@@ -7,10 +7,14 @@ import Header from './components/Header';
 import { HydrationScript } from 'solid-js/web';
 import { getThemeClass } from '~/utils/theme.js';
 import './root.css';
+import { HttpHeader } from 'solid-start/server';
 
 const Root = () => {
   return (
     <Html class={getThemeClass()} lang='en' dir='ltr'>
+      {/* https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-CH-Prefers-Color-Scheme */}
+      <HttpHeader name={'Accept-CH'} value={'Sec-CH-Prefers-Color-Scheme'} />
+
       <Head>
         <HydrationScript />
 

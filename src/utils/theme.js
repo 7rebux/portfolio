@@ -10,10 +10,9 @@ const setTheme = (newTheme) => {
 };
 
 const theme = () => innerTheme.theme;
-const systemTheme = () => innerTheme.systemTheme;
 
 const getThemeClass = () => {
-  return theme() === 'dark' || (theme() === 'system' && systemTheme()) ? 'dark' : null;
+  return theme() === 'dark' || (theme() === 'system' && innerTheme.systemTheme) ? 'dark' : null;
 };
 
-export { setThemeInner, themeCookie, setTheme, theme, systemTheme, getThemeClass };
+export { setThemeInner, themeCookie, setTheme, theme, getThemeClass };

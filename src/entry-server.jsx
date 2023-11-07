@@ -1,5 +1,5 @@
 import { StartServer, createHandler, renderAsync } from 'solid-start/entry-server';
-import { themeCookie, setThemeInner, systemTheme } from '~/utils/theme.js';
+import { themeCookie, setThemeInner } from '~/utils/theme.js';
 
 export default createHandler(
   ({ forward }) => {
@@ -9,7 +9,7 @@ export default createHandler(
 
       setThemeInner({
         theme: theme ?? 'system',
-        systemTheme: systemTheme(),
+        systemTheme: event.request.headers.get('Sec-CH-Prefers-Color-Scheme') === 'dark',
       });
 
       return forward(event);
