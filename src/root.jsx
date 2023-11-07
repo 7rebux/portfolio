@@ -1,30 +1,16 @@
 // @refresh reload
 import { Suspense } from 'solid-js';
-import {
-  Body,
-  ErrorBoundary,
-  FileRoutes,
-  Head,
-  Html,
-  Routes,
-  Title,
-  Link,
-  Meta,
-  Scripts,
-} from 'solid-start';
+import { Body, ErrorBoundary, FileRoutes, Head, Html, Routes, Scripts } from 'solid-start';
+import { Title, Link, Meta } from '@solidjs/meta';
 import Footer from './components/Footer';
 import Header from './components/Header';
-import './root.css';
 import { HydrationScript } from 'solid-js/web';
-import { systemTheme, theme } from '~/hooks/useTheme.js';
+import { getThemeClass } from '~/utils/theme.js';
+import './root.css';
 
 const Root = () => {
   return (
-    <Html
-      class={theme() === 'dark' || (theme() === 'system' && systemTheme()) ? 'dark' : ''}
-      lang='en'
-      dir='ltr'
-    >
+    <Html class={getThemeClass()} lang='en' dir='ltr'>
       <Head>
         <HydrationScript />
 

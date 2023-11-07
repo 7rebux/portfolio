@@ -1,12 +1,9 @@
-import { systemTheme, theme } from '../hooks/useTheme';
+import { getThemeClass } from '~/utils/theme.js';
 
 const SkillIcon = (props) => {
-  // const [theme, _] = useTheme();
   const { src, ...rest } = props;
 
-  const isLightMode = () => theme() !== 'dark' && !(theme() === 'system' && systemTheme());
-
-  return <img {...rest} src={`${src}${isLightMode() ? `&theme=light` : ''}`} />;
+  return <img {...rest} src={`${src}${!getThemeClass() ? `&theme=light` : ''}`} />;
 };
 
 export default SkillIcon;

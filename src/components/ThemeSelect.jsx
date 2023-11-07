@@ -1,6 +1,6 @@
 import { For, Show, createSignal } from 'solid-js';
 import clickOutside from '~/directives/clickOutside';
-import { theme, setTheme } from '~/hooks/useTheme';
+import { theme, setTheme } from '~/utils/theme.js';
 import { DesktopIcon, MoonIcon, SunIcon } from './icons';
 import { Dynamic } from 'solid-js/web';
 

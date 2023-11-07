@@ -1,12 +1,13 @@
 import { mount, StartClient } from 'solid-start/entry-client';
-import { setThemeInner } from '~/hooks/useTheme.js';
+import { themeCookie, setThemeInner } from '~/utils/theme.js';
 
-mount(() => <StartClient />, document);
-
-// Update theme
-queueMicrotask(() => {
-  setThemeInner({
-    theme: localStorage.theme ?? 'system',
-    systemTheme: window.matchMedia('(prefers-color-scheme: dark)').matches,
+mount(() => {
+  themeCookie.parse(document.cookie).then((theme) => {
+    setThemeInner({
+      theme: theme ?? 'system',
+      systemTheme: window.matchMedia('(prefers-color-scheme: dark)').matches,
+    });
   });
-});
+
+  return <StartClient />;
+}, document);
