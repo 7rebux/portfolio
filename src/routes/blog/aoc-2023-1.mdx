@@ -1,0 +1,247 @@
+import { PostHeader } from '~/components/PostHeader.jsx';
+import { default as PostLayout } from '~/components/PostLayout.jsx';
+
+export default PostLayout;
+
+<PostHeader
+  title='Advent of Code 2023 - Day 1: Trebuchet?!'
+  description='Solving the 1st day of Advent of Code 2023 in Kotlin'
+  date='Dec 1, 2023'
+  author='Nils Osswald'
+/>
+
+Today is the first of December and that means another [Advent of Code](https://adventofcode.com/) calendar is ready to be solved.
+My goal for this year is to solve all **25** days and also write a blog post on here for each day.
+But first of all or in case you are wondering what is this thing called [Advent of Code](https://adventofcode.com/) about?
+
+## 🎄 What Is Advent Of Code?
+
+Generally speaking [Advent of Code](https://adventofcode.com/) is an advent calendar with **25** *doors* or more like small puzzles/problems in this case.
+Every day at **5 am UTC** there is a new problem being released.
+Each problem comes with two parts and a personal puzzle input, which is usually a text file consisting of hundreds of lines.
+Also, every of these puzzles has a little story attached to it which makes reading the problem way more fun.
+But that is enough explanation for now, let's get ourselves a cup of coffee and get right into today's problem!
+
+> Like in all the last years I will put all my solutions in a [GitHub Repository](https://github.com/7rebux/advent-of-code-2023/tree/main).
+
+## The Problem
+
+> Today's challenge can be found [here](https://adventofcode.com/2023/day/1)
+
+Like always on the first day were being told a small introduction to this year's story.
+This year something with the snow production is wrong. The elves have given us a map with 50 (25 for part 1 + 25 for part 2) stars on it.
+Each of these stars marks a location that is very likely to have a problem.
+And our job is to fix the problem at every marked spot on the map.
+We have a lot of questions, but we can not really ask them because we just realized that the elves are already loading us into a trebuchet.
+As they are making their final adjustments, they discover that their calibration document (today's puzzle input) is actually more or less corrupted, and we are being told to recover the calibration values of each line.
+
+The problem description is the following:
+
+> On each line, the calibration value can be found by combining the first digit and the last digit (in that order) to form a single two-digit number.
+
+Also on every day there is a small section with an example input (which is super useful for testing) and how it is solved.
+Our today's example is this:
+
+```text
+1abc2
+pqr3stu8vwx
+a1b2c3d4e5f
+treb7uchet
+```
+
+And the expected output is `142`.
+
+So let's break this down. As we have been told we are looking for the first and the last digit on each line and then combine those to a two-digit number. In the end we add all these numbers together and get `142`.
+For the first three lines of the example input this is straight forward. On the first line we have `1` as our first digit and `2` as our last digit.
+Combining those gives us `12` and NOT 3, because we do not add them instead we are just supposed to concatenate them.
+And so forth, but on the 4th line things start to get a little odd. We only have one digit which is `7`, so how are we going to make a 2-digit number out of that.
+The answer is fairly simple: In this case the first and the last digit is just the same number `7` and adding those together leaves us with `77`. So when we add all these numbers together we end up with `12 + 38 + 15 + 77 = 142`.
+This is indeed our expected result, so let's start coding up a simple algorithm which does the same thing for our larger (1000 lines) personal puzzle input.
+
+## ⭐ Part 1
+
+Like in the last three years I decided again to make my solutions in the [Kotlin](https://kotlinlang.org/) programming language.
+Actually I have been really looking forward to this year's [Advent of Code](https://adventofcode.com/) to finally write some kotlin again, since I have been mostly working on web development related things this year.
+
+For every years [Advent of Code](https://adventofcode.com/) challenge I'm using my self-made template/boilerplate which can be found [here](https://github.com/7rebux/aoc-template-kotlin).
+It provides a simple data structure for every day with a function for each of the two parts and also functions for the test inputs of both parts.
+
+For example the boilerplate for function of the first part looks like this:
+
+```kotlin
+override fun partOne(input: List<String>): Int {
+    TODO("Not yet implemented")
+}
+```
+
+The input parameter is a list containing each line of the puzzles input.
+Let's start by looking at how we are going to determine if a character in a line is actually a number or better to say a digit since we are only looking for the first digit of a number.
+So kotlin actually has a small utility function for that in its standard library which is called `Char#isDigit`.
+Under the hood this just checks if the given character is present in certain Unicode character ranges which contain digits.
+To find the first digit in our line we are going to be doing something like this:
+
+```kotlin
+line.first(Char::isDigit)
+```
+
+This is just a small line of code but let's actually break this down a bit in case you are not familiar with what's happening here.
+The `first` function is another function of the kotlin standard library which can be called on all types of collections or in this case even a string because a string is just a `collection` of characters.
+The function takes one argument which is a predicate. When that predicate matches the function returns the first character on which the predicate was `true`.
+
+Let's just do the same thing for the last digit, because kotlin also has a `last` function which works the same way as the first function but starting from the last item in the collection.
+
+```kotlin
+val first = line.first(Char::isDigit)
+val last = line.last(Char::isDigit)
+```
+
+Now we have both the first and the last digit of a specific line. All that's left is to do this for every line and concatenate them together.
+And obviously not forgetting to sum them up in the end. My final solution for this looks like the following:
+
+```kotlin
+override fun partOne(input: List<String>): Int {
+    return input.sumOf { line ->
+        val first = line.first(Char::isDigit)
+        val last = line.last(Char::isDigit)
+
+        return@sumOf "$first$last".toInt()
+    }
+}
+```
+
+With that there are two things left I want to explain a bit more closely.
+The first one being `sumOf`. This should be pretty self-explaining but to explain this in a more technical way it is just a chained call of firstly a `map` function and then the `sum` function.
+We are mapping every line in our input to the 2-digit numbers and then adding those together.
+The second thing is the part of concatenating the digits together which looks super weird in this case.
+What I'm using there is a string template and with `$` we can pass variables into it.
+I know this is not an efficient solution, but I think it looks better than adding a `.digitToInt()` to both `first` and `last` and then returning `first * 10 + last` in the end.
+But that is just my personal preference, and I'm also trying to make my solutions as readable as possible in this year's [Advent of Code](https://adventofcode.com/).
+I could also write my solution like this:
+
+```kotlin
+override fun partOne(input: List<String>) = input.sumOf { "${it.first(Char::isDigit)}${it.last(Char::isDigit)}".toInt() }
+```
+
+But well who enjoys reading code like this? I would like to write self-explanatory code which I can also easily understand when I come back a few months later.
+
+Seems like we have written everything that we need for part one. Let's grab our test data and see if the test passes.
+
+```kotlin
+override val partOneTestExamples: Map<List<String>, Int> = mapOf(
+    listOf(
+        "1abc2",
+        "pqr3stu8vwx",
+        "a1b2c3d4e5f",
+        "treb7uchet"
+    ) to 142,
+)
+```
+
+And indeed the test passes, and we can actually run that with our real puzzle input now.
+The console gives us `56042` and I submit the number on the website.
+Tada 🎉 there is our first star ⭐ of 2023!
+
+> Keep in mind everyone has other puzzle inputs so my output will not be correct on your inputs.
+
+## ⭐ Part 2
+
+The second part usually is like the first part but a bit more difficult and with some more things to consider.
+And this is also the case today: We are being told that our calculation is not quite right.
+The reason being that we did not consider numbers that are written out like `nine` or `seven`.
+And we now should also treat them as digits.
+
+Sounds pretty easy, why not just replace all of them and do the same logic as in part one right?
+But it is not as easy as it sounds let me explain.
+Let's consider the following line of input: `eightwo`. If we read this ourselves we see two numbers an `8` and an `2`.
+But when we actually replace those numbers, for example we replace the `eight` with its digit we end up with `8wo`.
+And now there is our problem because those numbers overlapped we actually destroyed the second number and our output would be massively invalid.
+But what are we going to do about this now? So there are multiple ways to get around this problem.
+A pretty cool one that I would like to mention is to replace the `eight` with `eight8eight` which then leaves us with `eight8eightwo` and if we then replace the `two` we actually get our expected output.
+But this solution to me is pretty boring, so I thought about doing this in another way.
+
+My plan is to loop over each character and then adding the corresponding digit of it into a separate list.
+This again is not the most efficient solution because we iterate much more often than we actually need to but as I already said everyone knows what's going on, and it's straight forward readable.
+
+The first thing I did was creating a map with every digit that could occur as a word and bind the integer value to it.
+
+```kotlin
+private val digitsMap = mapOf(
+    "one"   to 1,
+    "two"   to 2,
+    "three" to 3,
+    "four"  to 4,
+    "five"  to 5,
+    "six"   to 6,
+    "seven" to 7,
+    "eight" to 8,
+    "nine"  to 9,
+)
+```
+
+Now we can start implementing the algorithm. I'm just going to create an empty mutable list of Integers in which we can store those digits.
+
+```kotlin
+val digits = mutableListOf<Int>()
+```
+
+Also, I'm not going to use a for loop for that, instead I'm going for a while loop and on every iteration I'm going to drop the first character of our line.
+In order to do that we have to `clone` our line value since it's not mutable.
+Putting all of that together ends us up with this piece of code:
+
+```kotlin
+override fun partTwo(input: List<String>): Int {
+    return input.sumOf { line ->
+        val digits = mutableListOf<Int>()
+        var temp = line
+
+        while (temp.isNotEmpty()) {
+            if (temp.first().isDigit()) {
+                digits += temp.first().digitToInt()
+            } else {
+                digitsMap.forEach { (k, v) ->
+                    if (temp.startsWith(k)) {
+                        digits += v
+                        return@forEach
+                    }
+                }
+            }
+
+            temp = temp.drop(1)
+        }
+
+        return@sumOf digits.first() * 10 + digits.last()
+    }
+}
+```
+
+I have to admit this year's first day is actually a bit more complicated with what we are normally treated by [Advent of Code](https://adventofcode.com/). But let's see how this continues.
+So what's going on here now? Inside the while loop the first thing I'm checking is if the current character on index 0 is a digit and if yes we will just add that right into our list and continue with the next character.
+But if it is not a digit I'm checking if our current string starts with any of the keys in our digit map and if so we add the value of that key inside our list.
+And this is what we are going to do until there is no character left in our cloned string since we always remove the first one.
+Once that loop is done we concatenate the first and the last item in our numbers list together (Also there is no more predicate since all of those entries are numbers now).
+But this time I'm actually doing it mathematically because those values are already integers. But as I mentioned it doesn't really matter how you put them together.
+And to sum all of those numbers up we just use the same `sumOf` function like in the first part.
+
+We also got an example input for part two so let's test this one and see if our solution actually works.
+And again it does work on the example data which looks like this if you care by the way:
+
+```text
+two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen
+```
+
+And the expected output this time is `281`.
+
+So let's run this function with our personal input and submit it. And again it is indeed correct, and we collect our second and last star ⭐ on the first day of this year's [Advent of Code](https://adventofcode.com/).
+
+## Final Words
+
+I feel like this was quite a lot of text today and also this was more or less the first time I wrote a blog post.
+In the next few days it hopefully will be less text, but I will still try to explain everything I think about and all my code blocks.
+
+So yeah if you want to read my full solution you can do that [here](https://github.com/7rebux/advent-of-code-2023/blob/main/src/main/kotlin/de/nosswald/aoc/days/Day01.kt) and I hope we are going to see each other after tomorrow's challenge.
