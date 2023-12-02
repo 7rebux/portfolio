@@ -1,0 +1,240 @@
+import { PostHeader } from '~/components/PostHeader.jsx';
+import { default as PostLayout } from '~/components/PostLayout.jsx';
+
+export default PostLayout;
+
+<PostHeader
+  title='Advent of Code 2023 - Day 2: Cube Conundrum'
+  description='Solving the 2nd day of Advent of Code 2023 in Kotlin'
+  date='Dec 2, 2023'
+/>
+
+Here we are again, and I'm super excited what problem we have to solve today.
+It's only the second day of this year's [Advent of Code](https://adventofcode.com/) challenge and I already feel like I've been doing this for a week.
+
+I'm quickly going to explain today's story part, if you don't care feel free to skip ahead to the description of the problem.
+So yesterday we "calculated" calibration values for our launch out of a trebuchet. Now we landed together with an elf at *Snow Island*.
+As we walk up a mountain the elf presents us a small bag with some cubes of multiple colors and asks to play some games with him.
+The rules are simple, each turn the elf grabs a handful of cubes and shows it to us. He will do this a few times until the game is over.
+After each game the elf writes down it's results and asks us a question. Now this is where today's problem comes in play.
+
+## The Problem
+
+> Today's challenge can be found [here](https://adventofcode.com/2023/day/2)
+
+The elf's bag consists of an unknown amount of cubes. Those cubes can either be `red` 🔴, `green` 🟢 or `blue` 🔵.
+The puzzle input for today is a list of all the games we played against the elf. Let me show you and then explain what information is actually written down there.
+
+```text
+Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
+Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
+Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
+Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
+```
+
+This is today's example input. As we can see we have 5 different games played. Each of these games has one or more parts split by a `;` (semicolon).
+This parts (later referred to as `Sets`) consist of all the cubes the elf grabbed out of the bag in the corresponding turn.
+
+So know that we know what the input means, let's take a look at the question today's first part.
+
+> The Elf would first like to know which games would have been possible if the bag contained only 12 red cubes, 13 green cubes, and 14 blue cubes?
+
+That means we are supposed to count all games which would have been possible if we were limited to those maximum numbers of cubes.
+So if we take a look at our example input we can see that with those limits only game `1`, `2` and `5` would have been possible.
+In the game `3` in the first turn `20` red 🔴 cubes were exposed but our limit is at `12`. And in game `4` there are 15 blue 🔵 cubes in the last turn, but our limit is at 14
+so that's also not possible.
+
+But more on that later, first we have to do some input parsing to actually work with the data.
+
+## Parsing
+
+Normally I would be parsing all of this using a [Regular expression](https://en.wikipedia.org/wiki/Regular_expression). But since I'm limited on time
+(because this is a challenge) and there wasn't any intuitive thought on my mind how to parse these lines, let's just do it the normal way by splitting
+up the lines and then looping over them. While we are at that let's also just create a function for that because part two will use the same input data anyway,
+and we can reuse that later.
+
+```kotlin
+private fun parseGames(input: List<String>): List<Game> {...}
+```
+
+As you can see the return type of this function is a List of `Game`. In my case `Game` is a data class I just defined which look like this:
+
+```kotlin
+private data class Game(val id: Int, val sets: List<Set>)
+```
+
+I'm storing the id and the different `Sets` in there. Normally you would of course not call this data class `Set` (because there is already a `Set` in kotlin),
+but since this is only a small puzzle it doesn't really matter. To complete this let me show you the `Set` data class and also an `Color` enum I created.
+
+```kotlin
+private data class Set(val cubes: MutableMap<Color, Int>)
+private enum class Color { RED, GREEN, BLUE }
+```
+
+We just have a cubes `Map` for each turn or now `Set` in the game and map the amount of cubes to its corresponding color.
+With that done we now have enough *"objects"* to store our data, so let's get to the parsing part:
+
+```kotlin
+private fun parseGames(input: List<String>): List<Game> {
+    return input.mapIndexed { index, line ->
+        val sets = buildList {
+            line.split(": ")[1].split("; ").forEach { set ->
+                val current = Set(mutableMapOf())
+
+                set.split(", ").forEach {
+                    val (amount, color) = it.split(" ")
+
+                    when (color) {
+                        "red" -> current.cubes[Color.RED] = amount.toInt()
+                        "green" -> current.cubes[Color.GREEN] = amount.toInt()
+                        "blue" -> current.cubes[Color.BLUE] = amount.toInt()
+                        else -> error("Invalid color: $color")
+                    }
+                }
+
+                this.add(current)
+            }
+        }
+
+        return@mapIndexed Game(index + 1, sets)
+    }
+}
+```
+
+Now this looks like a lot of code, but it should be fairly easy to understand since it's mainly splitting up strings and putting it inside our data classes.
+There are still a few things I would like to talk about. The first one being parsing of the games `id`. As you might or might not have seen I'm not actually extracting the `id`
+out of the line. Because when we take a look at our input data we can see that the id's of the games are just incremented on an 1 based index. Since kotlin's indexing is 0 based,
+we have to add `+1` to every index when we store the game.
+
+The second thing is the `when` statement which has 4 branches, but we only have 3 colors right? That's because I wanted to make sure that our personal input data does not contain any
+surprises in terms of another color like `yellow` for example. So when this is the case we just throw an error, and we know what went wrong.
+I find it super important to catch those types of edge cases early on, so I don't have to do tons of debugging later when I'm stuck on an invalid result.
+
+With the parsing function done we can now finally move on to solving the first part.
+
+## ⭐ Part 1
+
+As we already know we are supposed to find all the games that would have been possible with the given number of cubes.
+So the first thing I'm going to do is to create a map for all those numbers.
+
+```kotlin
+val maxCubesByColor = mapOf(
+    Color.RED   to 12,
+    Color.GREEN to 13,
+    Color.BLUE  to 14,
+)
+```
+
+Now what I forgot to mention is that we don't have the count the amount of possible games, instead we have to sum up all the ids of the possible games.
+Let's do that by using the same `sumOf` function like in yesterday's solution. In case you don't know this is just a chained call of `map` and then `sum`.
+
+The last thing that's left to do is to take a look at each `Set` or turn of the current game and check, if that was a possible outcome.
+With the knowledge about all of that my final function for part one looks like the following:
+
+```kotlin
+override fun partOne(input: List<String>): Int {
+    return parseGames(input).sumOf { game ->
+        game.sets.forEach { set ->
+            if (set.cubes.any { (color, amount) -> amount > maxCubesByColor[color]!! })
+                return@sumOf 0
+        }
+
+        return@sumOf game.id
+    }
+}
+```
+
+There should not much be left to explain. Only one thing, when the game is not possible (meaning the amount of cubes is bigger than our given limit) I'm just returning an early `0`
+so our sum does not increase. Otherwise, I just return the id of the game object.
+
+Like yesterday, I'm also going to test this first with our example input and check if our output is correct.
+
+```kotlin
+override val partOneTestExamples: Map<List<String>, Int> = mapOf(
+    listOf(
+        "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green",
+        "Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue",
+        "Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red",
+        "Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red",
+        "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"
+    ) to 8
+)
+```
+
+So when we run this our output is `8` and that is what we expected.
+By using my personal data as the input I get `2913` and this is the correct answer.
+First star ⭐ collected! Let's move on to part two.
+
+## ⭐ Part 2
+
+As we continue our walk, the elf poses a second question:
+
+> In each game you played, what is the fewest number of cubes of each color that could have been in the bag to make the game possible?
+
+So what we have to do this time is to find the minimum amount of all the different colored cubes which is needed to make a game possible.
+Also, this time the output should not be the sum of the ids, instead we are asked to find the sum of the power of each set of cubes.
+
+With `power` there isn't any `x^x` meant, it just means to multiply each minimum number of each color of the cubes.
+That would be `minRed * minGreen * minBlue`, and then like in the first part just sum the up together for each game.
+
+The logic of this part is actually quite similar to the first one. Let me just show you what I've come up with and then explain my solution to you:
+
+```kotlin
+override fun partTwo(input: List<String>): Int {
+    return parseGames(input).sumOf { game ->
+        val minCubesNeededByColor = mutableMapOf(
+            Color.RED   to 0,
+            Color.GREEN to 0,
+            Color.BLUE  to 0,
+        )
+
+        game.sets.forEach { set ->
+            set.cubes.forEach { (color, amount) ->
+                minCubesNeededByColor[color] = maxOf(minCubesNeededByColor[color]!!, amount)
+            }
+        }
+
+        return@sumOf minCubesNeededByColor.values.reduce(Int::times)
+    }
+}
+```
+
+Again there is quite a lot of stuff happening but let's go through this together.
+Like in the first part we have a `Map` again, but we actually have to recreate this map for every game because the minimum amount of cubes is different for every game.
+At the start I just use the value `0` for every key since we don't know the cubes played yet.
+
+After that we again go through every `Set` of the current game and then create an inner loop that loops over every amount of each color of cubes.
+And then we just update the value inside our map to the maximum (`maxOf`) of our current value and the value of our current color cube amount.
+So once the loop is done each key in the set should now have the minimum amount of cubes needed for the current game to be possible.
+
+The last thing I'm doing here is to multiply them all together. In case you aren't familiar with functional programming this might look a bit weird to you at the first look.
+But let me explain. I'm taking all the `values` of our map and then run the reduce function with a reference to `Int#times` on it.
+The `Int#times` function is just an operator function for the `*` operator in kotlin. (You can read more about that [here](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/times.html))
+The reduce function has an accumulator and runs the function passed in the first parameter for each value of the list.
+Between every call of the function the current value is applied to the accumulator so in this case it always calculates `previous * current`.
+When this is done for every number in the list it just returns the current value of the accumulator, which is our searched `power`.
+
+Of course, I could have also written it like this:
+
+```kotlin
+return@sumOf minCubesNeededByColor[Color.RED]!!
+  * minCubesNeededByColor[Color.GREEN]!!
+  * minCubesNeededByColor[Color.BLUE]!!
+```
+
+But I think you can now see why I decided to write it in the typical functional way of doing this.
+
+For testing this part we can use the same example as given in part one.
+Running this gives us `2286` and this is indeed the expected result.
+So let's again run this function with the real puzzle input and enter the result on the website.
+The output for me is `55593` and that is also correct.
+With that we easily grab the second star ⭐ of today's challenge!
+
+## Final Words
+
+I feel like today's challenge was a lot easier than yesterday's. But that doesn't mean that it stays like that, we have to wait what tomorrow's challenge brings us.
+
+Like always you can read my full solution [here](https://github.com/7rebux/advent-of-code-2023/blob/main/src/main/kotlin/de/nosswald/aoc/days/Day02.kt).
+
+That's it for today, thanks for reading and see you tomorrow (hopefully)!
