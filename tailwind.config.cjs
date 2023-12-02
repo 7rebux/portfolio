@@ -12,13 +12,30 @@ module.exports = {
       }
     },
     extend: {
-      typography: {
+      typography: (theme) => ({
         DEFAULT: {
           css: {
             pre: null,
+            'code::before': {
+              content: '""',
+            },
+            'code::after': {
+              content: '""',
+            },
+            'blockquote p:first-of-type::before': {
+              content: '""',
+            },
+            'blockquote p:last-of-type::after': {
+              content: '""',
+            },
+            code: {
+              background: 'rgba(0, 0, 0, 0.1)',
+              paddingInline: '4px',
+              borderRadius: '4px',
+            }
           },
         },
-      },
+      }),
       screens: {
         '4xl': '1728px',
       },
