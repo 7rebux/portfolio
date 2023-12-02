@@ -9,7 +9,7 @@ const Blog = () => {
       <div class='flex flex-col gap-2'>
         <For each={posts}>
           {({ name, date, path }) => (
-            <div class='inline-flex items-center gap-6'>
+            <div class='inline-flex items-center gap-6 font-mono'>
               <p class='font-light text-zinc-700 dark:text-zinc-400'>{date}</p>
               <A href={`/blog${path}`} class='transition hover:text-primary'>
                 <p>{name}</p>
