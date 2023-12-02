@@ -17,7 +17,7 @@ const About = () => {
             </p>
             <p>Software Engineer</p>
           </div>
-          <div class='max-w-[60ch] text-black dark:text-white'>
+          <div class='text-black dark:text-white sm:max-w-[60ch]'>
             <p>
               I'm a passionate software developer based in Germany. My journey in the world of
               programming began at the young age of 12, and since then, I've been dedicated to
@@ -30,9 +30,13 @@ const About = () => {
           </div>
         </div>
         <div class='flex w-full justify-center sm:w-fit'>
-          {/* TODO: Replace this with an image */}
           {/* TODO: Add fancy animation */}
-          <div class='h-40 w-40 rounded-full border-2 bg-surface-light dark:bg-surface-dark' />
+          <img
+            class='h-48 w-48 rounded-full border-2'
+            draggable={false}
+            src='/images/avatar.png'
+            alt='A picture of myself'
+          />
         </div>
       </div>
 
@@ -81,7 +85,7 @@ const About = () => {
               </A>
             )}
           </For>
-          <p class='mt-1 text-center text-zinc-600 dark:text-zinc-400 sm:text-start'>
+          <p class='mb-10 mt-1 text-center text-zinc-600 dark:text-zinc-400 sm:text-start'>
             View all on my{' '}
             <A href='/blog' class='text-primary'>
               blog page
