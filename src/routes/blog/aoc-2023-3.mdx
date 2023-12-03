@@ -1,0 +1,379 @@
+import { PostHeader } from '~/components/PostHeader.jsx';
+import { default as PostLayout } from '~/components/PostLayout.jsx';
+
+export default PostLayout;
+
+<PostHeader
+  title='Advent of Code 2023 - Day 3: Gear Ratios'
+  description='Solving the 3rd day of Advent of Code 2023 in Kotlin'
+  date='Dec 3, 2023'
+/>
+
+Today is the third day of the 2023 [Advent of Code](https://adventofcode.com/) challenge and that means another puzzle is waiting to be solved.
+So day 3 is usually where the problems become a little bit more complicated.
+And this seems to be the case today, because the first thing that comes to our eyes is a grid with symbols and numbers, but more on that later.
+
+First of all let me explain what happened story wise for today.
+As we were walking up that mountain yesterday we now reached a gondola lift station.
+The lift can take us up to the water source, but there is of course a problem.
+The gondolas are not moving. And next to them, we find an engineer elf with a wrench.
+So we offer our help, and he proceeds to explain the problem to us.
+
+## The Problem
+
+> Today's challenge can be found [here](https://adventofcode.com/2023/day/3)
+
+The elf explains that an engine part seems to be missing, but he can not figure out which one.
+He also says if we can add up all the part numbers in the engine schematic, it should be easy to work out which part is missing.
+
+And this engine schematic is actually our today's puzzle input.
+Let's take a look at the example input.
+
+```text
+467..114..
+...*......
+..35..633.
+......#...
+617*......
+.....+.58.
+..592.....
+......755.
+...$.*....
+.664.598..
+```
+
+So as we can see we got lots of symbols and numbers.
+Points `.` do not count as a symbol by the way.
+We don't really understand what the meaning of each individual symbol is.
+The only thing we know is that **any number adjacent to a symbol** is considered a `part number`.
+Not only vertically or horizontally connected but also diagonally.
+So we are always looking at a `3x3` sub grid to scan for those `part numbers`.
+
+If we take a look at the first symbol in the example which is `*` in line `2` at column `4`, the adjacent numbers to this symbol are `467` and `35`.
+Not `114` because this number does not even partially occur in our `3x3` grid.
+
+And yes you heard right, *partially*. We are not only looking at the adjacent digits, instead we are supposed to scan for the full number.
+That makes things a lot more complicated, so let's try to solve the first part.
+
+## ⭐ Part 1
+
+As the elf mentioned we are supposed to **add up all the part numbers**, so that will be our result for this part.
+Because today input parsing is not really required we can start directly by finding all of the `part numbers`.
+
+For that to be possible we first have to find every valid symbol inside our input data.
+
+Let's start by writing a simple extension function to validate if a given `Char` is a valid symbol in this case.
+An extension function is a special feature in [Kotlin](https://kotlinlang.org/) which allows us to extend objects with our own defined functions on them.
+You can read more about this principle [here](https://kotlinlang.org/docs/extensions.html).
+
+```kotlin
+private fun Char.isSymbol(): Boolean {
+    return !(this == '.' || this.isDigit())
+}
+```
+
+In extension function the keyword `this` is just the reference to the object.
+We just check that the character is **not** a `.` and not a digit.
+
+With that done we can move on to looping over every character in our given input.
+Let's just do that with a simple nested for loop first:
+
+```kotlin
+for ((y, line) in input.withIndex()) {
+    for ((x, c) in line.withIndex()) {
+        if (!c.isSymbol()) {
+            continue
+        }
+
+        // TODO: Find all part numbers
+    }
+}
+```
+
+This is just the normal way of performing a `forEachIndexed`.
+Oh, and by the way `withIndex` just combines each value with it's corresponding index.
+I will get back to simplifying this in a more functional approach later don't worry!
+
+What we have to do first is to find all `adjacent` numbers of the current symbol.
+So let's quickly create a function for that:
+
+```kotlin
+private fun findAdjacentNumbers(input: List<String>, point: Point): List<Int> {...}
+```
+
+As the parameters I'm passing in the input list and the indices of the symbol as a `Point`.
+This is just a data class looking like this:
+
+```kotlin
+private data class Point(val x: Int, val y: Int)
+```
+
+Now let's think about how to find all `adjacent` numbers in here.
+As I already mentioned early we have to find the `3x3` grid with the `symbol` in the center.
+So there are multiple ways to achieve this, but what I did is to create a `List` of all directions `-1, 0, 1` and added them
+to each axis to get the delta values of each index. Then I just filter out the point of the symbol in the center and return all the 8 surrounding points.
+
+```kotlin
+private fun Point.getNeighbors(): List<Point> {
+    val directions = listOf(-1, 0, 1)
+
+    return directions
+        .flatMap { dX -> directions.map { dY -> Point(x + dX, y + dY) } }
+        .filter { it != this }
+}
+```
+
+With this function done we can now loop over all neighbors in our `findAdjacentNumbers` function and watch out
+for all numbers we can find there. While we are at it let's also make sure that each neighbor is still in bounds of our input,
+so we don't have to fight around with `IndexOutOfBounds` exceptions later.
+
+```kotlin
+point.getNeighbors().filter { p ->
+    p.y in input.indices &&
+    p.x in input[p.y].indices &&
+    input[p.y][p.x].isDigit()
+}
+```
+
+This is a super convenient way of doing this in kotlin as you can see. I'm just checking if the given index is present in
+its corresponding indices iterator. And as you can see I'm also checking if the character at our current point is a digit,
+because otherwise there would be no need to scan for the full number.
+
+Let's continue by actually finding the whole `Integer` and not only just the digits at our neighbors positions.
+To do that I'm going to create another function which will return the `Integer` and just takes the position of a single digit as it's input.
+
+```kotlin
+private fun String.findNumberAt(point: Point): Int {...}
+```
+
+As you can see this is an extension function on the `String` object.
+This is because we only have to scan for full numbers in the same `line` since they are being read from left to right.
+
+But now let's actually think about how we can approach this. We only know where one single digit is, and we also do not know
+if this is the first digit or the last digit or any digit in between of our searched number.
+My thought immediately was to scan all the characters to the left until we find our starting index and then do the same in the opposite direction (right)
+to find the ending index. With knowing both of these indices we can then build together the full number.
+
+But how are we going to implement this now? Well again there are many ways to do this, and I will show the normal way and then the more or less functional
+equivalent of doing this.
+
+Let's start of with the traditional way:
+
+```kotlin
+private fun String.findNumberAt(point: Point): Int {
+    var numberString = ""
+    var currentIndex = point.x
+
+    // Determine starting index
+    while (currentIndex > 0 && this[currentIndex - 1].isDigit()) {
+        currentIndex--
+    }
+
+    // Build number string
+    while (currentIndex < this.length && this[currentIndex].isDigit()) {
+        numberString += this[currentIndex]
+        currentIndex++
+    }
+
+    return numberString.toInt()
+}
+```
+
+As you can see I'm just using `while` loops to determine the starting and ending indices.
+And again we have to check if we are still in bounds. We could also do this like in the function above but since we do not need a
+check in both directions at one time this is also fine. The building process is done with a string which I just add every digit and then
+convert it to an `Integer` in the end.
+
+Now let's get to the interesting implementation:
+
+```kotlin
+private fun String.findNumberAt(point: Point): Int {
+    val firstIndex = generateSequence(point.x, Int::dec)
+        .takeWhile { it >= 0 && this[it].isDigit() }
+        .last()
+    val lastIndex = generateSequence(point.x, Int::inc)
+        .takeWhile { it < this.length && this[it].isDigit() }
+        .last()
+
+    return (firstIndex..lastIndex)
+        .map(this::get)
+        .joinToString("")
+        .toInt()
+}
+```
+
+So in this approach I'm not using a `while` loop, instead I'm using the `generateSequence` function from the standard library.
+This function takes two parameters. The first one is the `seed` of the sequence and the second one is a function which returns the next value of
+the sequence. The second function call here is a `takeWhile`, which just takes every element until the given condition is `false`.
+To finish this chain I'm just taking the `last` value of the stream since this is either the one all to the left or all to the right.
+After finding the both outer indices I'm just creating a range in between them and map every index to its corresponding character in the string.
+And then I'm just combining them all into a `String` and converting it to the final `Integer`.
+
+Now we just need to call this function inside our `findAdjacentNumbers` numbers function on each point:
+
+```kotlin
+private fun findAdjacentNumbers(input: List<String>, point: Point): List<Int> {
+    return point.getNeighbors()
+        .filter { p ->
+            p.y in input.indices &&
+            p.x in input[p.y].indices &&
+            input[p.y][p.x].isDigit()
+        }
+        .map { p -> input[p.y].findNumberAt(p) }
+}
+```
+
+And now this function is done right? Well almost there is an important thing that we missed.
+Let me explain. Let's have a look at the first `3x3` grid of the example:
+
+```text
+7 . .
+. * .
+3 5 .
+```
+
+When looking at the `7` in the top left everything should work as expected. But once we look at the `35` in the bottom row and think
+about our implementation we eventually come to the conclusion that the `35` is going to be added **two** times, but there is only one `35`.
+That is because we don't actually keep track of our already scanned indices, so let's quickly do that.
+
+For this I'm just going to create a `Set<Point>` in the most top level function. This will not only skip double numbers for the same symbol,
+but also all double numbers in general since there might be a case in which 2 symbols *touch* the same number.
+Then I'm also going to pass the reference to this list down until the `findNumberAt` function.
+And this is the place where we add all of our already `checked` points:
+
+```kotlin
+val indices = firstIndex..lastIndex
+
+checked.addAll(indices.map { Point(it, point.y) })
+```
+
+Let's also check if a number has already been checked inside the `findAdjacentNumbers` function.
+For that I'm just going to replace the `map` function with this thing:
+
+```kotlin
+.mapNotNull { p ->
+    if (checked.contains(p)) null else input[p.y].findNumberAt(p, checked)
+}
+```
+
+Now only numbers that we don't already know are being added to the `List`.
+
+With that done we can now **finally** finish of the first part by implementing the `partOne` function:
+
+```kotlin
+override fun partOne(input: List<String>): Int {
+    val checked = mutableSetOf<Point>()
+
+    return input.mapIndexed { y, line ->
+        line
+            .withIndex()
+            .filter { it.value.isSymbol() }
+            .map { findAdjacentNumbers(input, Point(it.index, y), checked) }
+            .sumOf(List<Int>::sum)
+    }.sum()
+}
+```
+
+As you can see I replaced the `for` loops with an indexed mapping function.
+Then I'm just linking the index for each character to itself.
+After that I filter everything out, which is not a valid symbol.
+And then to finish it of I'm mapping each symbol to it's corresponding adjacent numbers and sum **everything** up.
+
+Let's test this quickly with the example input and see if we are right:
+
+```kotlin
+override val partOneTestExamples: Map<List<String>, Int> = mapOf(
+    listOf(
+        "467..114..",
+        "...*......",
+        "..35..633.",
+        "......#...",
+        "617*......",
+        ".....+.58.",
+        "..592.....",
+        "......755.",
+        "...$.*....",
+        ".664.598..",
+    ) to 4361
+)
+```
+
+The test passed! And also the result of my personal input is correct.
+There finally is our first star ⭐ of today's challenge.
+
+## ⭐ Part 2
+
+So there we are at the final part of today's puzzle.
+And don't worry this is not going to take a lot of time.
+Actually I only took about 2-3 minutes to solve this part after I was done with the first one.
+
+So let me explain what's going on here.
+After we found the first part, the engineer found the missing part and installs it in the engine.
+The engine of the gondola springs to life, but it does not seem to move at all.
+We actually forgot something. One of the gears in the engine is also broken.
+And now we are supposed to find the `gear ratio` in order to fix it.
+
+So let me explain real quick what the `gear ratio` is.
+
+A `gear` is every symbol which represents a `*` in our input.
+And the `ratio` is the product of all the adjacent numbers (Which is limited to `2` in the case of a `gear`).
+
+For this part we are supposed to find the sum of all `gear ratios` in our engine schematic.
+
+So what do we have to change for that? Well not that much actually, only the part where we check if the current character is a valid symbol
+and the part where we sum all the adjacent numbers up.
+
+Since this is almost the same as part one, I'm actually going to outsource the functionality of part one into another function, so we can call
+this one in both parts:
+
+```kotlin
+private fun combined(
+    input: List<String>,
+    isSymbolValid: (Char) -> Boolean,
+    formula: (List<Int>) -> Int): Int
+{
+    val checked = mutableSetOf<Point>()
+
+    return input.mapIndexed { y, line ->
+        line
+            .withIndex()
+            .filter { isSymbolValid(it.value) }
+            .map { findAdjacentNumbers(input, Point(it.index, y), checked) }
+            .sumOf { formula(it) }
+    }.sum()
+}
+```
+
+I created two extra parameters which are used to validate the symbol and to handle the calculation process.
+Now when we use this function for part two it looks like this:
+
+```kotlin
+override fun partTwo(input: List<String>): Int {
+    return combined(input, { c -> c == '*' }, { nums ->
+        if (nums.size == 2) nums.reduce(Int::times) else 0
+    })
+}
+```
+
+So this time for the symbol validation we are just checking if it equals the symbol for a gear which is `*`.
+And for the calculation we first check if the size of the adjacent numbers is exactly `2` and then we do the same
+reduce trick to multiply all numbers together like in yesterday's challenge.
+You could also write `nums[0] * nums[1]` since this are guaranteed two numbers.
+
+With that our solution for the final part is also done, and we can get to run it.
+The test output gives us `467835` which is correct and my personal input data gives me `81721933` which is also correct!
+This was the last star ⭐ for today!
+
+## Final Words
+
+First of all I would like to mention that there was a lot of changing up functions going on.
+So you might be interested in looking at the final result which can be found [here](https://github.com/7rebux/advent-of-code-2023/blob/main/src/main/kotlin/de/nosswald/aoc/days/Day03.kt).
+
+I'm writing this blog post in the evening, and over the course of the day I've read some interesting things on the
+[Advent of Code subreddit](https://www.reddit.com/r/adventofcode/). So someone made the assumption that a gear never actually has more than 2 adjacent neighbors.
+I tried this for my input and this is actually not true. So be careful with your solution when you rely on that.
+And also a number is never adjacent to more than one symbol, which is actually true in my case.
+But I still took care of this edge case in my solution to provide an accurate solution.
+
+As always thanks for reading today's post which was actually pretty long.
+And hopefully we see each other on tomorrow's puzzle! :)
