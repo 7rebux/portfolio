@@ -1,0 +1,240 @@
+import { PostHeader } from '~/components/PostHeader.jsx';
+import { default as PostLayout } from '~/components/PostLayout.jsx';
+
+export default PostLayout;
+
+<PostHeader
+  title='Advent of Code 2023 - Day 4: Scratchcards'
+  description='Solving the 4th day of Advent of Code 2023 in Kotlin'
+  date='Dec 4, 2023'
+/>
+
+Welcome back to another [Advent of Code](https://adventofcode.com/) challenge.
+Today is the 4th of December, and I'm super excited about today's puzzle.
+I hope so are you!
+
+Yesterday we continued our journey via a gondola which we had to fix.
+But we were not actually climbing up a mountain - above us suddenly an entire new landmass
+appears. We actually traveled to an island in the sky.
+
+As we exit the gondola we find an elf sitting on the floor and ask him about the water sources.
+He tells us that he does not know where it is located but the **gardener** would know.
+But to get to the **gardener** we would need a boat, and luckily he would let us borrow his one,
+if we help him with a thing.
+
+## The Problem
+
+> Today's challenge can be found [here](https://adventofcode.com/2023/day/4)
+
+The elf tells us about his **scratchcards** which he got as a gift.
+But he can not figure out what he has won.
+
+So our puzzle input for today's challenge are his scratchcards.
+Let's take a look at them (the example input):
+
+```text
+Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
+Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
+Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1
+Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83
+Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
+Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
+```
+
+Each card has two lists of numbers (divided by a pipe `|`) written on it.
+On the left side are all numbers which would lead to a win.
+And on the other side are all the numbers we scratched open.
+
+The value calculation of a card works like this: Every number that we have (on the right side) which is part of
+the winning numbers (on the left) counts as one _match_. The first _match_ counts as `1` point and every other _match_ after that
+doubles our current points.
+
+This can be written as a simple maths formula:
+
+```text
+points = 2^(matches - 1)
+```
+
+You might wonder what happens when `matches = 0`. Actually points is also going to be `0` then because
+we are working with `Integers`, so the `2^(-1) = 0.5` just becomes `0` after converting it to an `Integer`.
+
+What we are looking for today is the sum of all point values on each card.
+
+## Parsing
+
+Let's start by once again parsing our input.
+I created a `Card` data class for this, which has the following signature:
+
+```kotlin
+data class Card(val id: Int, val winning: List<Int>, val actual: List<Int>)
+```
+
+Then I created a function to map each line of our input to a `Card` object:
+
+```kotlin
+private fun parseInput(input: List<String>): List<Card> {
+    return input.mapIndexed { index, line ->
+        val (winning, actual) = line
+            .substringAfter(':')
+            .split("|")
+            .map { numbers ->
+                numbers
+                    .split(" ")
+                    .filter(String::isNotBlank)
+                    .map(String::toInt)
+            }
+
+        return@mapIndexed Card(index + 1, winning, actual)
+    }
+}
+```
+
+This actually looks more complicated than it actually is, let me explain.
+So in the first place I'm once again using the `mapIndexed` function just like in the second day since
+the id is just incremented by `1` every line.
+
+Then I remove everything in front of the `:` and split on the `|` to get the `winning` (left) and the `actual` (right) side of the numbers.
+But since this two sides are still respresentd as a `String` we also have to map them to a `List` of `Int`.
+I'm doing this by splitting on whitespace and then filtering out every blank `String` because there are cases in which `2` or more whitespaces are in between numbers.
+Lastly I'm converting every number to an `Integer`.
+
+In the end I'm just passing both number lists and also the index offset by `1` (Because the `Card` id is not zero based) to the `Card` constructor.
+
+## ⭐ Part 1
+
+After parsing all of this, the only thing which is left to do, is to calculate the points of each card and then sum them up.
+And this is how I did it:
+
+```kotlin
+override fun partOne(input: List<String>): Int {
+    return parseInput(input).sumOf { card ->
+        2.toDouble().pow(card.actual.count(card.winning::contains) - 1).toInt()
+    }
+}
+```
+
+I'm not going to explain the `sumOf` function and things like that. Please read the previous days blog posts if you don't know about this stuff yet.
+The only thing which I don't like about this solution is that the `pow` function does not work with `Integers`.
+That's because we first have to convert the `base` which is 2 to a `Double` and also convert the result back to an `Integer`.
+
+But this is actually all for the first part, let's get to testing:
+
+```kotlin
+override val partOneTestExamples: Map<List<String>, Int> = mapOf(
+    listOf(
+        "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53",
+        "Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19",
+        "Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1",
+        "Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83",
+        "Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36",
+        "Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11",
+    ) to 13
+)
+```
+
+The test passes (`13`) and also the output for my personal puzzle input (`21485`) is correct.
+First star ⭐ collected, let's move on!
+
+## ⭐ Part 2
+
+We are just about to report our result to the Elf, but then one of us suddenly notices that the rules
+have been actually written to the backside of the cards.
+
+There's no such thing as _points_. Instead, **scratchcards** only cause us to win **more scratchcards** equal to the number of `winning` numbers we have.
+Let me explain this process real quick by looking at the first few lines of our example input:
+
+```text
+Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
+Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
+```
+
+When we take a look at the first card, we find four matching numbers (`48`, `17`, `86` and `83`).
+This means we win one copy each of the next four cards (ids `2`, `3`, `4` and `5`).
+Moving on to the second card. We have two matching numbers (`61` and `32`), so we win one copy each of cards `3` and `4`.
+But since we own card `2` exactly two times we get another copy of cards `3` and `4`.
+And so on.
+
+When I first solved the part this morning, I created a list and added new `Card` instances every time we would get copies.
+But this was a super inefficient solution (took about **6.5 seconds** to run), so I thought about it more deeply.
+So first the obvious part, since all the cards we get are just copies of already existing ones, we only have to store how many
+copies of each card we have.
+
+I'm doing this by creating a `Map` which associates every card `id` to `1`, since we have `1` instance of each card in the beginning.
+
+```kotlin
+val cards = parseInput(input)
+val copies = cards
+    .associate { it.id to 1 }
+    .toMutableMap()
+```
+
+And also make sure that the `Map` is `mutable` because we have to increment these values in the next step.
+
+Now we again loop over every card like in the first part and find the number of `winning` (`matching` in this snippet) ones:
+
+```kotlin
+cards.forEach { card ->
+    val matching = card.actual.count(card.winning::contains)
+}
+```
+
+Next we have to determine all the card ids which we have to copy. I'm doing this by creating an `Range`
+starting at the `id` of the current `Card` offset by `1` to the amount of matching numbers plus the `id` of the current `Card`
+offset again by `1`.
+
+```kotlin
+val cardsToCopy = (card.id + 1)..(card.id + matching)
+```
+
+The parentheses are actually not needed here, but I still include them for better readability.
+
+Now we get to the interesting part. At first, you might think that we need 2 more nested loops for the copying process.
+But it's actually only **one**, let me show you:
+
+```kotlin
+cardsToCopy.forEach { id ->
+    copies[id] = copies[id]!! + copies[card.id]!!
+}
+```
+
+As you can see I'm not reevaluating all the matching numbers of the copied cards, instead I'm just
+adding the amount of copies of our current card to the other ones, which is kind of a _recursive approach_.
+
+So with all of that done the only thing that's left is to count how many `Cards` we have in total, since that is what
+is asked for part two.
+
+My final solution is the following:
+
+```kotlin
+override fun partTwo(input: List<String>): Int {
+    val cards = parseInput(input)
+    val copies = cards
+        .associate { it.id to 1 }
+        .toMutableMap()
+
+    cards.forEach { card ->
+        val matching = card.actual.count(card.winning::contains)
+        val cardsToCopy = (card.id + 1)..(card.id + matching)
+
+        cardsToCopy.forEach { id ->
+            copies[id] = copies[id]!! + copies[card.id]!!
+        }
+    }
+
+    return copies.values.sum()
+}
+```
+
+Let's also test this to see if it works, and indeed it does.
+The test returns `30` and my input gives us `11024379` and this is both correct.
+
+Second star ⭐ acquired!
+
+## Final Words
+
+In my opinion today was again a lot easier than yesterday's challenge, but despite that it was a fun puzzle today.
+And I'm pretty sure the difficulty is going to raise up really fast in the next few day's.
+
+As always you can find my full solution [here](https://github.com/7rebux/advent-of-code-2023/blob/main/src/main/kotlin/de/nosswald/aoc/days/Day04.kt).
+
+See you tomorrow!
