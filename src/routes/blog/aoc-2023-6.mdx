@@ -1,0 +1,159 @@
+import { PostHeader } from '~/components/PostHeader.jsx';
+import { default as PostLayout } from '~/components/PostLayout.jsx';
+
+export default PostLayout;
+
+<PostHeader
+  title='Advent of Code 2023 - Day 6: Wait For It'
+  description='Solving the 6th day of Advent of Code 2023 in Kotlin'
+  date='Dec 6, 2023'
+/>
+
+Welcome back to another day of this year's [Advent of Code](https://adventofcode.com/) challenge.
+I'm super excited for today's puzzle since yesterday we experienced a huge difficulty spike.
+
+It took a lot of time and effort to solve yesterday's challenge (at least for me), but eventually we did it and helped
+the gardener and his team to start planting their seeds.
+Today we continue our journey to fix the water source. The gardener yesterday told us that there was no sand left to filter
+the water and that's why they shut it down.
+While travelling across `Island Island` we find a poster with the title `Boat races! ... Desert Island`.
+`Desert` island? There has to be sand right - So we manage to sign up as a competitor.
+And that's exactly what we are going to be doing today. we will take place in a `Boat race`.
+
+## The Problem
+
+> Today's challenge can be found [here](https://adventofcode.com/2023/day/6)
+
+It does not take us a lot of time to find out that this is (of course) not a normal race.
+Instead, we receive a fixed amount of time in which our boat has to travel as far as possible.
+
+As a part of signing up we received a piece of paper with a table on it (our puzzle input):
+
+```text
+Time:      7  15   30
+Distance:  9  40  200
+```
+
+The first row contains the time we have for each race and the bottom row holds the record distance for each given time.
+
+And actually this is not a race with real boats. Instead, we have toy boats with a button on it.
+The button is used to increase the speed of the boat. Every boat has a starting speed of `zero millimeters per millisecond`.
+For every millisecond we hold the button down at the start of the race, the speed of the boat increases by `1`.
+
+So for example when we take a look at the first entry with a time of `7` milliseconds and a record distance of `9`
+millimeters:
+
+- If we don't hold the button at all the boat won't move since it's starting speed is `0` > **0 millimeters**
+- If we hold the button down for `1` millisecond the boat has `6` milliseconds left to move with the speed of `1` > **6 millimeters**
+- If we hold the button down for `2` milliseconds the boat has `5` milliseconds left to move with a speed of `2` > **10 millimeters**
+- And so forth...
+
+Our task for today is to count every possible holding time for the button which results in a new record.
+And we have to do that for every boat in the table and then in the end multiply them together.
+
+## ⭐ Part 1
+
+Since the example input and also the personal input only contains 2 lines we don't have to do much parsing.
+I tried to oversimplify that part by a lot and I ended up with this neat looking piece of code:
+
+```kotlin
+val (times, records) = input.map { line ->
+    line
+        .split(":")
+        .last()
+        .split(" ")
+        .filter(String::isNotBlank)
+        .map(String::toLong)
+}
+```
+
+Since the first line are the times and the second line are the ranges I just destructor the first two parts from the result list
+(which must have a length of 2 anyway). And for that line I just apply the same parsing logic, so I end up with a list of numbers for both.
+
+The next thing that we have to do is to count all possible records for each time.
+
+Let's first create a small helper function to calculate how many records are possible with a given time and record:
+
+```kotlin
+private fun countPossibleRecords(time: Long, record: Long): Int {
+    return (1..time).count { (time - it) * it > record }
+}
+```
+
+As you can see I'm just running a count on a range from `1` (since the boat does not move with `0`) until the maximum time (excluded because the boat has no time left to move otherwise).
+And then I'm running a simple calculation which is `(time - hold) * hold`. In here `hold` is equivalent to the speed of the boat and `time - hold` is the time we have left to move.
+So the result is straight up going to be the distance we travelled.
+
+Also, something nice to point out here is that all the possible distance values are symmetrical because the formula is just a multiplication.
+And since we all know `a * b = b * a`.
+
+With that my final solution looks like the following:
+
+```kotlin
+override fun partOne(input: List<String>): Int {
+    val (times, records) = input.map { line ->
+        line
+            .split(":")
+            .last()
+            .split(" ")
+            .filter(String::isNotBlank)
+            .map(String::toLong)
+    }
+
+    return times.zip(records).map { (time, record) -> countPossibleRecords(time, record) }.reduce(Int::times)
+}
+```
+
+The only thing that's left to explain is the zip function which just creates pairs of all the times paired to it's corresponding record distance.
+And in the end we just return the product of all the possible record values.
+
+Looks easy, doesn't it? Well let's see if it's also correct.
+
+```kotlin
+override val partOneTestExamples: Map<List<String>, Int> = mapOf(
+    listOf(
+        "Time:      7  15   30",
+        "Distance:  9  40  200",
+    ) to 288
+)
+```
+
+The test passes and also my output is valid.
+First star ⭐ done let's get to the next part.
+
+## ⭐ Part 2
+
+For part 2 the only thing that really changes is how the input is interpreted.
+We have a single race now and not multiple ones. That means all the numbers are just a long number.
+
+Actually to solve this part the only thing that we have to do is to adjust the parsing, which I have done and then my solution
+for this part looks like that:
+
+```kotlin
+override fun partTwo(input: List<String>): Int {
+    val (time, record) = input.map { line ->
+        line
+            .split(":")
+            .last()
+            .filterNot(Char::isWhitespace)
+            .toLong()
+    }
+
+    return countPossibleRecords(time, record)
+}
+```
+
+Test instantly passes and also my solution is correct again.
+This part actually only took my a few seconds.
+
+But I take that free star ⭐ gift :p
+
+## Final Words
+
+Well, this year is quite confusing when we think of the difficulty differences of each day so far.
+Yesterday we had a super hard challenge, and today we get an in my opinion even easier one that `Day 1` this year.
+I'm super excited for the next few days to see how this evolves.
+
+Even tho there is nothing you haven't seen in this blog post you can read my full solution [here](https://github.com/7rebux/advent-of-code-2023/blob/main/src/main/kotlin/de/nosswald/aoc/days/Day06.kt).
+
+See you tomorrow!
