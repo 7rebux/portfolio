@@ -1,0 +1,293 @@
+import { PostHeader } from '~/components/PostHeader.jsx';
+import { default as PostLayout } from '~/components/PostLayout.jsx';
+
+export default PostLayout;
+
+<PostHeader
+  title='Advent of Code 2023 - Day 5: If You Give A Seed A Fertilizer'
+  description='Solving the 5th day of Advent of Code 2023 in Kotlin'
+  date='Dec 5, 2023'
+/>
+
+Yesterday in [Advent of Code](https://adventofcode.com/) we helped an Elf to solve his scratchcards. In gratitude, he let us use his boat to reach the gardener.
+The gardener tells us that they had to stop the water because they ran out of sand to filter it.
+But he does not really have time to get more sand, because he is busy to make sure everyone on this island has enough food.
+
+## The Problem
+
+> Today's challenge can be found [here](https://adventofcode.com/2023/day/5)
+
+Today we have to help the gardener with his food production problem. For that he gave us the latest island almanac (our puzzle input).
+It lists all the seeds that need to be planted and also its corresponding soil, fertilizer and so on.
+
+Let's take a look at today's example input (I'm not going to paste the whole thing in here since it's kinda large):
+
+```text
+seeds: 79 14 55 13
+
+seed-to-soil map:
+50 98 2
+52 50 48
+
+humidity-to-location map:
+60 56 37
+56 93 4
+```
+
+In the first line are all seeds which need to be planted. In this example these are `79`, `14`, `55` and `13`.
+The rest of the input contains of maps split by new lines. Each map has a name on it's first line and lots of numbers on every line after.
+In every line there are exactly **three** numbers. These numbers are used to convert a source category in a destination category.
+For example `seeds` as our source and `soil` as the destination (which is the first map in the input).
+
+To better understand the conversion process let's take a look at the second line of numbers in the `seed-to-soil` map:
+
+- `52` (Destination range start)
+- `50` (Source range start)
+- `48` (Range length)
+
+As this is not direct map instead it uses ranges. We get the start of the source and the destination range and also the length for both.
+That means with the 3 numbers we can build up 2 different ranges.
+
+- Destination range: `52..100`
+- Source Range: `50..98`
+
+Keep in mind that the end value of both is actually not included.
+To now actually map the first seed number `79` to its corresponding soil number we have to do the following:
+
+- Which source range of the map contains the seed number? - `50..98`
+- What is the number for the same index, as in the source range, in the destination range? - `81`
+
+If there is no source range containing the seed number it just stays the same.
+
+This process has to be repeated for all the seed numbers and also for each map until we reach final `location` number.
+So after that every seed number is mapped to a `location` number.
+
+The output for today must be the minimum of all `location` numbers.
+
+Let's start of by parsing today's input.
+
+## Parsing
+
+I suppose the parsing process is going to be the same in part two so let's just create a function for that which returns
+all the seeds and also the maps.
+
+```kotlin
+private fun parseInput(input: List<String>): Pair<List<Long>, List<ConversionMap>> {...}
+```
+
+And also some data classes simplify working with the values:
+
+```kotlin
+data class ConversionMap(val entries: List<RangeEntry>)
+
+data class RangeEntry(val destinationStart: Long, val sourceStart: Long, val rangeLength: Long)
+```
+
+I don't store the name for the `ConversionMap` because its already sorted top to bottom in the input, and we can just pass it through.
+
+With that done we can start by parsing the seeds. You may have also noticed that I'm using `Long` here instead of `Int`
+since the numbers in my personal input are quite large.
+
+```kotlin
+val seeds = input
+    .first()
+    .removePrefix("seeds: ")
+    .split(" ")
+    .map(String::toLong)
+```
+
+For that we just take the first line, remove the `seeds:` prefix and map every number after that to an `Long`.
+
+To parse the maps it's actually a bit more complicated. Since each map is split by two new lines I make a `String` out
+of the input list, so we can split on `\n\n` since kotlin does not provide a function to split lists on a certain condition (sadly).
+Also, we can just remove the first to lines since the first one is for the seeds and the second one is just empty.
+The full parsing code for the maps then looks like this:
+
+```kotlin
+val maps = input
+    .drop(2)
+    .joinToString("\n")
+    .split("\n\n")
+    .map { block ->
+        block
+            .split("\n")
+            .drop(1)
+            .map { line ->
+                line
+                    .split(" ")
+                    .map(String::toLong)
+            }
+            .map { RangeEntry(it[0], it[1], it[2]) }
+    }.map { ConversionMap(it) }
+```
+
+I'm not going to explain everything in there since it's pretty much the same logic as for the seeds.
+You can just read through it with the input next to it, and it should be self explaining.
+
+Now with both of that parsed I just return `Pair(seeds, maps)` and the parsing function is done.
+
+## ⭐ Part 1
+
+With the parsing logic done, the first part is actually pretty straight forward.
+Let me show you my code first:
+
+```kotlin
+override fun partOne(input: List<String>): Long {
+      val (seeds, maps) = parseInput(input)
+
+      return maps.fold(seeds) { acc, map ->
+          acc.map { source ->
+              map.entries.find { source in it.sourceRange }?.destinationForSource(source) ?: source
+          }
+      }.min()
+  }
+```
+
+Let's go through this line by line.
+The first thing I'm doing is to fold on `maps` with `seeds` as the accumulator.
+Then for every seed we try to find a `RangeEntry` in the current map which contains the seed.
+If we find an entry we just call the `destinationForSource` function on it which I'll explain in a second.
+And if we do not find an entry we just return source since it can stay the same.
+
+So two things here which I didn't cover yet. First of all `sourceRange` is a property of `RangeEntry` which just
+represents the range from `sourceStand` until `sourceStart + length`:
+
+```kotlin
+val sourceRange get(): LongRange {
+    return sourceStart until sourceStart + length
+}
+```
+
+And the second thing is the function `destinationForSource` which looks for the destination number of the given `seed` inside its ranges:
+
+```kotlin
+fun destinationForSource(source: Long) = destinationStart + (source - sourceStart)
+```
+
+At the end our fold function returns all the `location` numbers for the original seed numbers, and we can just take the minimum
+value of that and return it.
+
+Let's quickly test that with the test input:
+
+```kotlin
+override val partOneTestExamples: Map<List<String>, Long> = mapOf(
+      exampleInput to 35
+  )
+```
+
+Test passed, and also the output for my puzzle input is correct.
+First star ⭐ of today's challenge collected let's see what's waiting for us at part two.
+
+## ⭐ Part 2
+
+So at part two things get a little different. We still have our maps and ranges and all of that, but we do not have normal seed numbers anymore.
+Instead, we have huge entire ranges of seed numbers.
+And we still have to find the lowest location number again at the end but this time for every single seed in the seed ranges.
+
+This makes things a lot more complicated, since we can not just brute force every single seed number anymore.
+I mean theoretically we could, but that would literally take forever. So we have to come up with a smarter way of doing this.
+
+Let me first explain how these seed ranges are defined now since our input is still only giving us this list of numbers.
+
+```kotlin
+val (seeds, _) = parseInput(input)
+val seedRanges = seeds.windowed(2, 2).map { start, length ->
+    start until start + length
+}
+```
+
+As you can see every pair of 2 seeds in the original input now becomes a range of seeds.
+Starting at the first value and ending on the first value plus the second value (which is the length).
+
+Now to find the overall lowest location for all the input seeds there are `2` possibilities that come to my mind.
+The first one I think would be the more performant one, where we don't actually loop over every seed of all the ranges.
+Instead, we would pass each seed down our `ConversionMap`s until we get ranges of output locations. And then we would
+just return the minimum value of each location range.
+
+But for now I'm going to write up my second idea, which will take much longer to run but which is way easier to write.
+And since I do not have much time today, I prefer this solution for now. But I might do a follow-up post to this day
+later.
+
+So let me explain my idea. Again we can not loop over all the inputs seed, so we have to find another way.
+What I've come up with is to actually loop backwards from the location map until we end up with the seed for the given location.
+For the location number we just start at the absolute minimum which is `0` and repeat this process until we first hit a seed
+which is in one of all the input seed ranges.
+
+The first thing we have to do is to reverse the maps list, and also we have to swap every destination range with the source range.
+
+```kotlin
+val reversedMaps = maps.map {
+    ConversionMap(it.entries.map { old ->
+        RangeEntry(old.sourceStart, old.destinationStart, old.length)
+    })
+}.reversed()
+```
+
+I just manually create new objects for all the entries with the values swapped, but you could of course also do this
+with an extra function inside our data class.
+
+So now we get to the interesting part, which is the infinite loop from 0 until we find our first hit.
+To do this I'm once again going to use the `generateSequence` function from the kotlin standard library.
+As the seed I just use `0` and I increment by one on every loop.
+
+I'm just immediately going to show the full function chain since it's not much different from the first part as you will see.
+
+```kotlin
+return generateSequence(0, Long::inc).first { location ->
+    val seed = reversedMaps.fold(location) { acc, map ->
+        map.entries.find { acc in it.sourceRange }?.destinationForSource(acc) ?: acc
+    }
+
+    seedRanges.any { seedRange -> seed in seedRange }
+}
+```
+
+So as you can see I just use the first function with returns the location value of the sequence once it's predicate is
+truthy. The predicate in this case is true if the seed is contained in one of our input seed ranges.
+For the map traversing part it's actually pretty much the same as in part one.
+
+With all that done our full function for part two looks like this:
+
+```kotlin
+override fun partTwo(input: List<String>): Long {
+    val (seeds, maps) = parseInput(input)
+    val seedRanges = seeds
+        .windowed(2, 2)
+        .map { it[0] .. it[0] + it[1] }
+
+    val reversedMaps = maps.map {
+        ConversionMap(it.entries.map { old ->
+            RangeEntry(old.sourceStart, old.destinationStart, old.length)
+        })
+    }.reversed()
+
+    return generateSequence(0, Long::inc).first { location ->
+        val seed = reversedMaps.fold(location) { acc, map ->
+            map.entries.find { acc in it.sourceRange }?.destinationForSource(acc) ?: acc
+        }
+
+        seedRanges.any { seedRange -> seed in seedRange }
+    }
+}
+```
+
+As you can see it actually looks pretty simple. But let's see how it performs.
+Let's start by trying to run our test examples which actually is super easy because there are not a lot of
+input seeds, and you could just solve this the same way as the first part, but this of course does not work
+with our personal input which is a million times larger. So the test immediately passes and returns the expected
+`46` for the lowest location.
+
+Let's try running it with the actual input. After about `30` seconds of pure run time, it returns the number `72263011`.
+So our outer sequence function incremented `72263011` times which is a lot, but since sequences are insanely optimized in kotlin
+it actually _only_ took about `30` seconds. And yes the output is correct as well.
+
+Both stars ⭐⭐ collected for today!
+
+## Final Words
+
+I remember writing yesterday that the challenge was a bit too easy, and then well today I got hit with this one.
+This was a massive spike in difficulty compared to the last days, and I don't think that it will stay like this but let's see tomorrow.
+
+I hope your as excited as I am, see you tomorrow!
+
+Oh, and if you want to see my full code you can do that [here](https://github.com/7rebux/advent-of-code-2023/blob/main/src/main/kotlin/de/nosswald/aoc/days/Day05.kt).
