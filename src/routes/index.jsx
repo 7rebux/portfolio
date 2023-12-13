@@ -77,10 +77,10 @@ const About = () => {
       {/* Blog posts */}
       <div class='flex flex-col items-center gap-2 text-black dark:text-white sm:items-start'>
         <p class='mb-3 text-xl font-semibold'>Latest Blog Posts</p>
-        <div class='flex flex-col gap-2 sm:text-start'>
+        <div class='flex max-w-full flex-col gap-2 sm:text-start'>
           <For each={posts.slice(0, 3)}>
             {({ name, path }) => (
-              <A href={`/blog${path}`} class='transition hover:text-primary'>
+              <A href={`/blog${path}`} class='truncate transition hover:text-primary'>
                 • {name}
               </A>
             )}
