@@ -1,0 +1,241 @@
+import { PostHeader } from '~/components/PostHeader.jsx';
+import { default as PostLayout } from '~/components/PostLayout.jsx';
+
+export default PostLayout;
+
+<PostHeader
+  title='Advent of Code 2023 - Day 8: Haunted Wasteland'
+  description='Solving the 8th day of Advent of Code 2023 in Kotlin'
+  date='Dec 8, 2023'
+/>
+
+Today is the 8th day of this year's [Advent of Code](https://adventofcode.com/). Slowly puzzles will become a lot harder,
+which means that I will mainly focus on explaining my solutions rather than explaining the surrounding story.
+Of course, you can still read about every day's story on the official [Advent of Code](https://adventofcode.com/) website
+(You do not even have to solve the challenges for that).
+
+So with that said let's get straight into today's puzzle!
+
+## The Problem
+
+> Today's challenge can be found [here](https://adventofcode.com/2023/day/8)
+
+Let me explain today's problem with the example input:
+
+```text
+RL
+
+AAA = (BBB, CCC)
+BBB = (DDD, EEE)
+CCC = (ZZZ, GGG)
+DDD = (DDD, DDD)
+EEE = (EEE, EEE)
+GGG = (GGG, GGG)
+ZZZ = (ZZZ, ZZZ)
+```
+
+In the first line we have a list of instructions which are either `L` (left) or `R` (right).
+The rest of the input consists of a network. Every line has a root node and 2 destination routes (either left or right).
+The format looks like this: `root = (left, right)`.
+
+Our goal for the first part is to start at node `AAA` and count all the steps until we reach node `ZZZ`.
+
+Let's start by parsing the input.
+
+## Parsing
+
+I will create a function for that which returns a list of the direction sequence and also a map which represents the network.
+
+```kotlin
+private fun parseInput(input: List<String>): Pair<List<Direction>, Map<String, Pair<String, String>>> {...}
+```
+
+To parse the directions we can simply take the first element of the input list and map all the characters to either left or right.
+I also created an enum class for that for better representation:
+
+```kotlin
+private enum class Direction { LEFT, RIGHT }
+```
+
+The parsing then looks like this:
+
+```kotlin
+val directions = input.first().map { if (it == 'L') Direction.LEFT else Direction.RIGHT }
+```
+
+To parse the network we drop the first two lines of the input and then map it to an entry of our map which takes the root node
+as its key and the left and right node as a pair.
+
+```kotlin
+val entries = input.drop(2).map { line ->
+    val instruction = line.split(" = ")
+    val (left, right) = instruction
+        .last()
+        .split("(", ")", ", ")
+        .filter(String::isNotBlank)
+
+    return@map instruction.first() to Pair(left, right)
+}.toMap()
+```
+
+Now we just `return Pair(directions, entries)` and we can move on to actually solving the first part.
+
+## ⭐ Part 1
+
+Let's begin by creating two mutable variables. One for our current position (which is `AAA` in the beginning)
+and one to keep track of our step count.
+
+```kotlin
+var current = "AAA"
+var steps = 0
+```
+
+Now I create a while loop which runs until our current position is our destination (which is `ZZZ`).
+Inside this loop all we have left to do is to calculate the next position and increase `steps` by `1`.
+
+```kotlin
+while (current != "ZZZ") {
+    val next = entries[current]!!
+    val dir = directions[steps % directions.size]
+
+    current = if (dir == Direction.LEFT) next.first else next.second
+    steps++
+}
+```
+
+Also, what I forgot to mention is that we can not run out of directions because we just repeat that sequence over and over.
+This can simply be done by just taking the remainder of the size of all directions as the index.
+
+This actually already is everything for part one.
+
+Let's quickly write up a test for all the example inputs:
+
+```kotlin
+override val partOneTestExamples: Map<List<String>, Long> = mapOf(
+    listOf(
+        "RL",
+        "",
+        "AAA = (BBB, CCC)",
+        "BBB = (DDD, EEE)",
+        "CCC = (ZZZ, GGG)",
+        "DDD = (DDD, DDD)",
+        "EEE = (EEE, EEE)",
+        "GGG = (GGG, GGG)",
+        "ZZZ = (ZZZ, ZZZ)",
+    ) to 2,
+
+    listOf(
+        "LLR",
+        "",
+        "AAA = (BBB, BBB)",
+        "BBB = (AAA, ZZZ)",
+        "ZZZ = (ZZZ, ZZZ)",
+    ) to 6
+)
+```
+
+Both tests passed and also my output (`18827`) is correct.
+First star ⭐ collected let's move on to the second part.
+
+## ⭐ Part 2
+
+There is a different example provided for part two. Let's take a look:
+
+```text
+LR
+
+11A = (11B, XXX)
+11B = (XXX, 11Z)
+11Z = (11B, XXX)
+22A = (22B, XXX)
+22B = (22C, 22C)
+22C = (22Z, 22Z)
+22Z = (22B, 22B)
+XXX = (XXX, XXX)
+```
+
+As we can see our input looks more or less the same. But actually there is no `AAA` and `ZZZ` node anymore.
+For this part we are supposed to start at every node that ends with an `A` and count the steps until **all** the positions
+simultaneously end on a node which ends with a `Z`.
+
+Seems like things get a little more interesting here, but let's just start by writing the intuitive solution.
+
+The first thing I'm going to do is to extract the logic of the first part into a separate function to reuse that here:
+
+```kotlin
+private fun countSteps(
+    from: String,
+    until: (String) -> Boolean,
+    network: Pair<List<Direction>, Map<String, Pair<String, String>>>
+): Int {
+    val (directions, entries) = network
+    var current = from
+    var steps = 0
+
+    while (!until(current)) {
+        val next = entries[current]!!
+        val dir = directions[steps % directions.size]
+
+        current = if (dir == Direction.LEFT) next.first else next.second
+        steps++
+    }
+
+    return steps
+}
+```
+
+For the parameters I've got `from` which represents the starting position and also `until` which is a predicate which must
+be truthy once the end is reached. We can not just use a string for `until` because there is more than just one possible
+end in this part.
+
+Now let's see how many starting positions we actually find in our input. For the example input these are just `2` (`11A` and `22A`).
+For my input I have 6 starting positions.
+
+Now everything should be super easy to implement right? Well it's actually not, let me explain.
+The intuitive approach here would to just keep track of all the starting nodes and then use our while loop like in part one
+until all of these nodes are a node which ends on `Z`. For the test input this works without a problem but for the real input
+this will just not work ever. Because (spoiler) we have to take exactly `20220305520997` steps until we reach our goal.
+
+It's fairly easy to count all the steps it takes for one starting position until it's end node. But not for all at the same time.
+For solving this in a smarter way it's super important to know that once one node reaches its end it actually takes the same
+amount of steps until it reaches a node which ends on `Z` again. By knowing this we can calculate the total steps for all start nodes.
+
+This works by first determining how many steps it needs for all the nodes until itself reaches a node which ends on `Z`.
+Then with all the numbers we can calculate the (least common multiple)[https://en.wikipedia.org/wiki/Least_common_multiple], which
+will be our solution.
+
+Let me first show you how my final solution looks like and then explain the calculation process.
+
+```kotlin
+override fun partTwo(input: List<String>): Long {
+    val network = parseInput(input)
+
+    return network.second
+        .filter { it.key.last() == 'A' }
+        .map { entry -> countSteps(entry.key, { it.last() == 'Z' }, network) }
+        .map(Int::toBigInteger)
+        .reduce { acc, steps -> acc * steps / acc.gcd(steps) }
+        .toLong()
+}
+```
+
+As you can see I take all the keys of our network and filter for all the ones which end on `A`.
+Then I map them to the amount it takes to reach the first end node.
+And also I convert every single number to a `BigInteger` since they provide a `greatest common divisor` function
+which we need to calculate our result.
+
+To calculate the least common multiple of 2 numbers we can divide the product of them by their greatest common divisor.
+So if we do this step by step for every number with have we end up with the least common multiple of all the numbers.
+I achieve this by using the `reduce` function and then applying the formula for all the values.
+
+With that everything for part two is finally done, and we got the second star ⭐ of today's challenge.
+
+## Final Words
+
+Today was a quite interesting day. It started with a pretty easy first part and then a complex second part which I'm actually not
+sure what to think of. I like that you need to create a "smart" solution to solve it, but for that you need to know how the input works
+which was not explained in the puzzle description. So I had to figure that out on my own.
+
+You can view my full solution [here](https://github.com/7rebux/advent-of-code-2023/blob/main/src/main/kotlin/de/nosswald/aoc/days/Day08.kt).
+
+See you tomorrow!
