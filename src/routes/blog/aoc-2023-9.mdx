@@ -1,0 +1,159 @@
+import { PostHeader } from '~/components/PostHeader.jsx';
+import { default as PostLayout } from '~/components/PostLayout.jsx';
+
+export default PostLayout;
+
+<PostHeader
+  title='Advent of Code 2023 - Day 9: Mirage Maintenance'
+  description='Solving the 9th day of Advent of Code 2023 in Kotlin'
+  date='Dec 9, 2023'
+/>
+
+It's already the 9th day of [Advent of Code](https://adventofcode.com/). For me everything is still going great
+and I hope for you too!
+
+In today's puzzle we are asked to create a report of the environmental instabilities.
+
+## The Problem
+
+> Today's challenge can be found [here](https://adventofcode.com/2023/day/9)
+
+To create this report we got an _Oasis And Sand Instability Sensor_.
+Using this sensor we can create a report of our surroundings and this will also be our puzzle input:
+
+```text
+0 3 6 9 12 15
+1 3 6 10 15 21
+10 13 16 21 30 45
+```
+
+To find any future instabilities we are supposed to predict the next value for each line.
+As you might already have seen each line is a sequence of numbers so our goal is to find the next number in each sequence.
+
+Let's take a look at the first line:
+
+```text
+0 3 6 9 12 15
+```
+
+Of course, this is a super simple example since every value is just incremented by `3`.
+But that also makes it easy to explain the algorithm behind finding the next value.
+
+```text
+0   3   6   9  12  15
+  3   3   3   3   3
+    0   0   0   0
+```
+
+The first line is our original input. And every next line contains the differences between each pair of two
+values from above. This process has to be repeated until we end up with only differences of `0`.
+Now to find the next value in the first line (the original input) we have to sum up all the next values from the previous lines.
+To do that we start at the bottom most line and add the last value of that to the last value of the next line.
+This would be `0 + 3 = 3`. Then the `3` is inserted as the new last value in the line above.
+We repeat this process until we reach the new last value of the first line which is `18` in this case:
+
+```text
+0   3   6   9  12  15  18
+  3   3   3   3   3   3
+    0   0   0   0   0
+```
+
+For the output we have to return the sum of all the values we predicted in our input.
+
+## Parsing
+
+Since our input is just numbers split by a whitespace the parsing for today is super easy.
+
+```kotlin
+private fun parseInput(input: List<String>): List<List<Int>> {
+    return input.map { line -> line.split(" ").map(String::toInt) }
+}
+```
+
+I just mapped every line to a `List` of integers.
+
+## ⭐ Part 1
+
+Now we have to write up the algorithm I explained above.
+Since this process is the same for every line this is a great use case for a recursive function so let's do that.
+
+Like in all recursive functions we first have to define a condition on which we can break.
+In this case this happens when we reach the line in which all differences of the previous values are 0.
+
+Let me just show you my function and then explain the rest:
+
+```kotlin
+private fun nextInSequence(differences: List<Int>): Int {
+    if (differences.sum() == 0) {
+        return 0
+    }
+
+    val next = differences.zipWithNext().map { it.second - it.first }
+
+    return differences.last() + nextInSequence(next)
+}
+```
+
+As you can see we just return `0` as the next value if the sum of all current differences is `0`.
+Of course, you could also write that like `differences.all { it == 0 }`.
+
+So if we did not reach the last line the next thing to do is to calculate the next line,
+I did this by creating pairs of all the numbers in the current line and then mapping it to its difference.
+I'm subtracting the first value from the second value since the second value should always be bigger, and we don't
+end up with negative numbers.
+
+And now we can just return the current last number plus the last number of the next sequence (which is the recursive function call).
+
+Last thing that's left to do is to apply this function to every line of our input and then sum them all up.
+
+```kotlin
+override fun partOne(input: List<String>): Int {
+    return parseInput(input).sumOf(::nextInSequence)
+}
+```
+
+I'm not going to explain that since this should be nothing new after the previous days.
+
+Let's write a test for the example input which is provided:
+
+```kotlin
+override val partOneTestExamples: Map<List<String>, Int> = mapOf(
+    listOf(
+        "0 3 6 9 12 15",
+        "1 3 6 10 15 21",
+        "10 13 16 21 30 45",
+    ) to 114
+)
+```
+
+This test passes, so I can try it with my personal input.
+For the output I get `1647269739` and this is correct.
+
+First star ⭐ earned let's move on!
+
+## ⭐ Part 2
+
+For part two we are asked to predict a new first value for each line instead of a new last value.
+So well I thought why just not reverse everything?
+
+```kotlin
+override fun partTwo(input: List<String>): Int {
+    return parseInput(input).map(List<Int>::reversed).sumOf(::nextInSequence)
+}
+```
+
+So I just reversed all the parsed input lists and ran the program again.
+
+And the output of `864` actually was correct.
+That was easy, both stars ⭐ earned!
+
+## Final Words
+
+I'm kinda confused today, because this is supposed to be a day 9 challenge.
+I would even go that far to say that today was actually easier than day 1.
+Well at least if you had the idea with the recursion but even without that it was so much easier than yesterday's challenge.
+This year's difficulty spikes are super weird, but this also makes me a lot more interested in the upcoming days.
+
+As always you can view my full solution [here](https://github.com/7rebux/advent-of-code-2023/blob/main/src/main/kotlin/de/nosswald/aoc/days/Day09.kt).
+
+Let's hope tomorrow is going to be more challenging again!
