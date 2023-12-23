@@ -1,0 +1,226 @@
+import { PostHeader } from '~/components/PostHeader.jsx';
+import { default as PostLayout } from '~/components/PostLayout.jsx';
+
+export default PostLayout;
+
+<PostHeader
+  title='Advent of Code 2023 - Day 11: Cosmic Expansion'
+  description='Solving the 11th day of Advent of Code 2023 in Kotlin'
+  date='Dec 11, 2023'
+/>
+
+It's 6 am for me on the 11th of December and that means another [Advent of Code](https://adventofcode.com/) was just released.
+Let's get straight into solving!
+
+## The Problem
+
+> Today's challenge can be found [here](https://adventofcode.com/2023/day/11)
+
+In today's [Advent of Code](https://adventofcode.com/) challenge we are provided with an image from space:
+
+```text
+...#......
+.......#..
+#.........
+..........
+......#...
+.#........
+.........#
+..........
+.......#..
+#...#.....
+```
+
+Of course this image is represented in a text format, so we can work with it. In this case the "image" above is the
+example input. Every line has the same amount of characters, so we end up with a fixed width and height.
+Also, there are only 2 characters:
+- `#` For a galaxy
+- `#` For empty space
+
+Our objective for today is to find the sum of all distances between all galaxies.
+But there's also a little catch to that: Since it takes a lot of time to travel from one galaxy to another,
+the space actually expands in this time. For that we are also provided with a rule.
+Every row or column which only contains empty space (no galaxy) has to be doubled.
+
+That's all we know so far for part one, let's get coding!
+
+## ⭐ Part 1
+
+To start of implementing this I'm going to create 2 constant values for galaxies and expanded space:
+
+```kotlin
+private const val GALAXY = '#'
+private const val EXPANDED = 'x'
+```
+
+Now I'm not going to parse the input, but actually transform it instead.
+My idea is to replace every space which would end up expanded with our defined character for that (`x`).
+
+```kotlin
+private fun List<String>.expand(): List<String> {
+    return this.map { line ->
+        if (line.none { it == GALAXY })
+            EXPANDED.toString().repeat(line.length)
+        else {
+            line
+                .mapIndexed { i, old -> if (this.none { it[i] == GALAXY }) EXPANDED else old }
+                .joinToString("")
+        }
+    }
+}
+```
+
+To achieve this there are 2 possible cases for each line. The first one being that no single character in the current line is
+a galaxy. And the second one that the current index of this line also does not contain a galaxy in every other line at the same index.
+If any of this is true I'm replacing the empty space character with a `x`, so we know which space is expanded later on.
+
+After running this, the example input now looks like this:
+
+```text
+..x#.x..x.
+..x..x.#x.
+#.x..x..x.
+xxxxxxxxxx
+..x..x#.x.
+.#x..x..x.
+..x..x..x#
+xxxxxxxxxx
+..x..x.#x.
+#.x.#x..x.
+```
+
+For the next step I stored every galaxy with its coordinates in a list.
+And I also created a data class for that:
+
+```kotlin
+private data class Galaxy(val x: Int, val y: Int)
+
+val galaxies = space.flatMapIndexed { y, line ->
+    line.mapIndexedNotNull { x, c ->
+        if (c == GALAXY) Galaxy(x, y) else null
+    }
+}
+```
+
+Now we can actually implement a function which counts the steps it takes from one galaxy to another.
+Since we are not allowed to walk diagonally this will be the [manhattan distance](https://en.wikipedia.org/wiki/Taxicab_geometry) between the two points.
+
+To now calculate this while taking into consideration the space expansion, I will sum up all steps it takes to reach the same x and the same y coordinate like so:
+
+```kotlin
+private fun countSteps(space: List<String>, a: Galaxy, b: Galaxy): Long {
+    val xIndices = if (a.x > b.x) a.x - 1 downTo b.x else a.x until b.x
+    val yIndices = if (a.y > b.y) a.y - 1 downTo b.y else a.y until b.y
+    val xSteps = xIndices.sumOf { x -> if (space[a.y][x] == EXPANDED) 2 else 1 }
+    val ySteps = yIndices.sumOf { y -> if (space[y][a.x] == EXPANDED) 2 else 1 }
+
+    return xSteps + ySteps
+}
+```
+
+First I create a range of all indices in the path for both axes. And then I count the steps for both by either adding `2` if the current
+character is expanded or `1` when it's not.
+And in the end we can just return the sum of the x and y-axis steps.
+
+Now all that's left to do is to count the distance between each galaxy in our list and sum them up.
+When doing this with a loop we have to make sure that we don't count every path twice (`a to b` and `b to a`).
+My solution for that is to drop all the previous galaxies in the inner loop:
+
+```kotlin
+return galaxies
+    .flatMapIndexed { i, a ->
+        galaxies
+            .drop(i)
+            .map { b -> countSteps(space, a, b) }
+    }
+    .sum()
+```
+
+Now let's see if everything is correct:
+
+```kotlin
+override val partOneTestExamples: Map<List<String>, Long> = mapOf(
+    listOf(
+        "...#......",
+        ".......#..",
+        "#.........",
+        "..........",
+        "......#...",
+        ".#........",
+        ".........#",
+        "..........",
+        ".......#..",
+        "#...#.....",
+    ) to 374
+)
+```
+
+The example input returns `374` and my input gives me `10292708`, and both of these values are correct.
+First star ⭐ collected let's get to part two!
+
+## ⭐ Part 2
+
+For part two, all we have to do is to change the expansion size from `2` to `1000000`.
+
+To do this I added a parameter to the `countSteps` function, which retrieves the expansion size:
+
+```kotlin
+private fun countSteps(space: List<String>, a: Galaxy, b: Galaxy, expansionSize: Long): Long {
+    val xIndices = if (a.x > b.x) a.x - 1 downTo b.x else a.x until b.x
+    val yIndices = if (a.y > b.y) a.y - 1 downTo b.y else a.y until b.y
+    val xSteps = xIndices.sumOf { x -> if (space[a.y][x] == EXPANDED) expansionSize else 1 }
+    val ySteps = yIndices.sumOf { y -> if (space[y][a.x] == EXPANDED) expansionSize else 1 }
+
+    return xSteps + ySteps
+}
+```
+
+And also I created a combined function for both parts since the rest of the logic stays the exact same.
+
+```kotlin
+private fun combined(input: List<String>, expansionSize: Long): Long {
+    val space = input.expand()
+    val galaxies = space.flatMapIndexed { y, line ->
+        line.mapIndexedNotNull { x, c ->
+            if (c == GALAXY) Galaxy(x, y) else null
+        }
+    }
+
+    return galaxies
+        .flatMapIndexed { i, a ->
+            galaxies
+                .drop(i)
+                .map { b -> countSteps(space, a, b, expansionSize) }
+        }
+        .sum()
+}
+```
+
+With that done my final solution for both parts looks like this:
+
+```kotlin
+override fun partOne(input: List<String>): Long =
+    combined(input, expansionSize = 2)
+
+override fun partTwo(input: List<String>): Long =
+    combined(input, expansionSize = 1_000_000)
+```
+
+When I run this it gives me `82000210` for the test and `790194712336` for myself.
+Since this number is that big I used longs in every place and you should too!
+
+Both of these values are correct again, and we grab the second star ⭐ for today!
+
+## Final Words
+
+I actually enjoyed today's challenge a lot since there are many way's on how this could be implemented.
+Originally I just duplicated each row and column of the first part which was empty, but well then I saw part two,
+and I came up with a much better solution.
+
+And also if you are interested in more approaches to solve this I can really recommend today's
+[kotlin livestream](https://www.youtube.com/watch?v=1eBSyPe_9j0). This also explains everything more in depth, and
+I really enjoyed watching that this afternoon.
+
+My full code can be found [here](https://github.com/7rebux/advent-of-code-2023/blob/main/src/main/kotlin/de/nosswald/aoc/days/Day11.kt).
+
+I hope we see each other tomorrow!
