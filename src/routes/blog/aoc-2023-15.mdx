@@ -1,0 +1,140 @@
+import { PostHeader } from '~/components/PostHeader.jsx';
+import { default as PostLayout } from '~/components/PostLayout.jsx';
+
+export default PostLayout;
+
+<PostHeader
+  title='Advent of Code 2023 - Day 15: Lens Library'
+  description='Solving the 15th day of Advent of Code 2023 in Kotlin'
+  date='Dec 15, 2023'
+/>
+
+Welcome back to today's [Advent of Code](https://adventofcode.com/) challenge!
+We are already at day 15 which means puzzles are not going to be that easy anymore.
+So let's see what they prepared for us today.
+
+## The Problem
+
+> Today's challenge can be found [here](https://adventofcode.com/2023/day/15)
+
+The following is the example input which is provided:
+
+```text
+rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7
+```
+
+It's just a single line of letters, numbers and symbols.
+For now the only thing we have to consider is that these are multiple pairs of characters split by a comma `,`.
+
+Our task for today is to hash each of these pairs using a different algorithm and then summing up the results.
+
+The algorithm, named appendix1A, is described by multiplying the hash of the preceding characters plus the code of the current character by
+`17` and then taking the remainder of dividing it by `256`.
+
+That's pretty much all to explain for now, let's solve part one!
+
+## ⭐ Part 1
+
+Let's start by creating the hash function which takes a sequence of characters or just a `String` as its parameter.
+
+```kotlin
+private fun appendix1A(str: String): Int {
+    return str
+        .map(Char::code)
+        .fold(0) { acc, next -> (acc + next) * 17 % 256 }
+}
+```
+
+I'm just mapping each character of the String to its ASCII code and then applying the hash algorithm by using
+the fold function.
+
+Now we just have to apply this function to each pair of our input, so let's quickly do that:
+
+```kotlin
+override fun partOne(input: List<String>): Int {
+    return input
+        .first()
+        .split(",")
+        .sumOf(::appendix1A)
+}
+```
+
+When running this it returns `1320` for the example input and `507291` for mine.
+
+Both of these values are correct, and so we collect our first star ⭐ of today.
+
+## ⭐ Part 2
+
+In this part things become a lot more complicated and the numbers and symbols in our input start to have a meaning.
+However, our hashing algorithm is still correct. But rather than summing up all hashes we now have to treat each pair
+as an instruction.
+
+Also, we now have `256` individual boxes which we have to fill with values depending on the instructions.
+
+Let's take a look on how this instructions work. Let's just take a look at the first two instructions of the example
+input for this purpose: `rn=1,cm-
+
+Each instruction starts with a label followed by either an `=` or a `-`.
+If there is a `=` it is also followed by a number from 1 to 9, which is called a focal length.
+
+I'm going to explain the meaning of those symbols in just a second, let's first set some things up:
+
+```kotlin
+val boxes = mutableMapOf<Int, MutableList<String>>()
+val focalLengths = mutableMapOf<String, Int>()
+```
+
+You could also use an array to store the boxes, but I went with a map instead because not every box of those `256`
+will actually be used. I also store the focal length for each able, so we can access them easier later on.
+
+Now let's get to the instructions part:
+
+```kotlin
+input.first().split(",").forEach { instruction ->
+    if (instruction.contains('-')) {
+        val label = instruction.split("-").first()
+        val index = appendix1A(label)
+
+        boxes[index]?.remove(label)
+    } else {
+        val (label, focalLength) = instruction.split("=")
+        val index = appendix1A(label)
+        val box = boxes.getOrPut(index) { mutableListOf() }
+
+        if (!box.contains(label)) box.add(label)
+        focalLengths[label] = focalLength.toInt()
+    }
+}
+```
+
+If the instruction contains a `-` we are supposed to remove the label out of the corresponding box.
+The index of the box can be calculated by using the algorithm from part one.
+Since we take the remainder of dividing it by `256` the index can never be greater than that.
+Otherwise, when there is a `=` in the instruction we have to set the label inside the corresponding box.
+We can calculate the index just like above. And also I will store the focal length for that label.
+
+To wrap this all up we need to calculate the final result.
+This is done by summing up the `focusing power` of each box which contains one or more labels.
+
+The `focusing power` is calculated by `(boxIndex + 1) * (slotIndex + 1) * focalLenghts[label]`.
+Since we don't store empty boxes this is pretty simple:
+
+```kotlin
+return boxes.toList().sumOf { (box, values) ->
+    values.withIndex().sumOf { (slot, label) ->
+        (box + 1) * (slot + 1) * focalLengths[label]!!
+    }
+}
+```
+
+Running this with the example input gives `145` and with my own it returns `296921`.
+And again both of these values are correct.
+Second star ⭐ acquired!
+
+## Final Words
+
+I find today's problem super enjoyable and actually quite easy.
+The hard part was to read the huge amounts of text which they provided for today, but once you actually
+understand what you have to do it should be simple.
+
+You can check out my full solution [here](https://github.com/7rebux/advent-of-code-2023/blob/main/src/main/kotlin/de/nosswald/aoc/days/Day15.kt).
