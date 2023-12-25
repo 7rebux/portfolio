@@ -21,7 +21,7 @@
     "title": "Portfolio",
     "href": "https://github.com/7rebux/portfolio",
     "description": "The website you are currently looking at",
-    "images": [],
+    "images": ["images/portfolio/dark.png", "images/portfolio/light.png"],
     "stack": ["JavaScript", "Solid", "Tailwind"]
   },
   {
