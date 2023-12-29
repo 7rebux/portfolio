@@ -15,4 +15,4 @@ const getThemeClass = () => {
   return theme() === 'dark' || (theme() === 'system' && innerTheme.systemTheme) ? 'dark' : null;
 };
 
-export { setThemeInner, themeCookie, setTheme, theme, getThemeClass };
+export { setThemeInner, themeCookie, setTheme, theme, getThemeClass, innerTheme };
