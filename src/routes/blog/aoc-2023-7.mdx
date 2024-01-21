@@ -1,0 +1,223 @@
+import { PostHeader } from '~/components/PostHeader.jsx';
+import { default as PostLayout } from '~/components/PostLayout.jsx';
+
+export default PostLayout;
+
+<PostHeader
+  title='Advent of Code 2023 - Day 7: Camel Cards'
+  description='Solving the 7th day of Advent of Code 2023 in Kotlin'
+  date='Dec 7, 2023'
+/>
+
+Welcome to today's [Advent of Code](https://adventofcode.com/) challenge. Like on every other day I'm first going to explain
+the problem and then how I solved it.
+
+Today we get dropped out of the airship and find ourselves at the edge of a vast desert.
+There is also an elf nearby who immediately asks us if we brought *the parts*.
+We have no idea what parts she is talking about, and so she tells us to come with her.
+
+She is riding a camel and because this journey is going to take a few days she asks us to play a game of *camel cards*.
+
+## The Problem
+
+> Today's challenge can be found [here](https://adventofcode.com/2023/day/7)
+
+**Camel cards** is very similar to poker, but a bit simplified. I'm already familiar with the rules of poker so this should
+help me a bit.
+
+Let's first take a look at the rules of the game and then afterward at the puzzle input.
+
+Every hand is exactly one type. From strongest to weakest, they are:
+
+- Five of a kind, where all five cards have the same label: `AAAAA`
+- Four of a kind, where four cards have the same label and one card has a different label: `AA8AA`
+- Full house, where three cards have the same label, and the remaining two cards share a different label: `23332`
+- Three of a kind, where three cards have the same label, and the remaining two cards are each different from any other card in the hand: `TTT98`
+- Two pair, where two cards share one label, two other cards share a second label, and the remaining card has a third label: `23432`
+- One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: `A23A4`
+- High card, where all cards' labels are distinct: `23456`
+
+Hands are primarily ordered based on type; for example, every `full house` is stronger than any `three of a kind`.
+
+In total a hand has `5` cards, which each is any of **A, K, Q, J, T, 9, 8, 7, 6, 5, 4, 3 or 2**.
+To compare two hands we first have to compare the type of the hand, and if the type for both hands is the same we are supposed
+to compare each card one by one until we find a difference.
+
+Let's take a look at the example input:
+
+```text
+32T3K 765
+T55J5 684
+KK677 28
+KTJJT 220
+QQQJA 483
+```
+
+Each line contains a hand on the left side and a bit amount on the right side.
+I will explain the win amount calculation part later.
+
+## Parsing
+
+The first thing I'm going to do is to create a data class to store the hands:
+
+```kotlin
+private data class Hand(val cards: String, val bidAmount: Int)
+```
+
+Now let's write a function which maps the lines of our input to `Hand` objects:
+
+```kotlin
+private fun parseInput(input: List<String>): List<Hand> {
+    return input.map { line ->
+        val (cards, bidAmount) = line.split(" ")
+        val betterCards = cards
+            .replace('A', Char('9'.code + 5))
+            .replace('K', Char('9'.code + 4))
+            .replace('Q', Char('9'.code + 3))
+            .replace('J', Char('9'.code + 2))
+            .replace('T', Char('9'.code + 1))
+
+        return@map Hand(betterCards, bidAmount.toInt())
+    }
+}
+```
+
+What I'm doing here is to replace the characters from the cards with other characters which are in a specific order, so we can compare the hands easier later on.
+As you can see I take the ASCII code of `9` and add an offset to it and then transforming it back to a `Char` object.
+
+## ⭐ Part 1
+
+With the parsing logic done we can now start implementing part one.
+Let's start with the comparison logic of two hand objects.
+
+For that I'm going to extend our `Hand` data class by `Comparable<Hand>` so we can override the `compareTo` function, which
+is used by kotlin internally.
+
+```kotlin
+override fun compareTo(other: Hand): Int {
+    return compareBy(
+        { it.groups[0].second },
+        { it.groups.getOrNull(1)?.second },
+        Hand::cards
+    ).compare(this, other)
+}
+```
+
+Let me also quickly show what `groups` is in this case, before I'm going to explain this thing:
+
+```kotlin
+val groups = cards
+    .groupBy { it }
+    .map { it.key to it.value.size }
+    .sortedByDescending { it.second }
+    .toMutableList()
+```
+
+I'm using groups to create the card type comparison. A group is the amount of each card we have in the current hand.
+So for example for the hand `A5352` this would be `[('5', 2), ('A', 1), ('3', 1), ('2', 1)]`.
+And this is obviously sorted by the amount of cards. So in this case this would be a `two of a kind`.
+
+The comparison function takes a custom amount of arguments which is compared one after another until a difference is found.
+So in our case we first compare the groups and then the hand itself. For the groups we only need the first two because the other ones
+are redundant to determine the card type. And the second group can of course also be null in case of a `five of a kind`.
+
+With that done we can now implement a function which calculates the winning amounts:
+
+```kotlin
+private fun calculateWinnings(hands: List<Hand>): Int {
+    return hands
+        .sorted()
+        .mapIndexed { i, (_, bidAmount) -> (i + 1) * bidAmount }
+        .sum()
+}
+```
+
+For that we can just sort the hands (which uses our overwritten comparison function) and then take the sum of each hands bit amount multiplied by the index
+in the sorted list.
+
+This is all we had to do for part one, and so we end up with this function:
+
+```kotlin
+override fun partOne(input: List<String>): Int =
+    calculateWinnings(parseInput(input))
+```
+
+Let's also just implement the test case which is expected to output `6440`:
+
+```kotlin
+override val partOneTestExamples: Map<List<String>, Int> = mapOf(
+    listOf(
+        "32T3K 765",
+        "T55J5 684",
+        "KK677 28",
+        "KTJJT 220",
+        "QQQJA 483",
+    ) to 6440
+)
+```
+
+When running this the test passes and my output is `250898830` which is correct!
+First star ⭐ collected, let's move on!
+
+## ⭐ Part 2
+
+For part two the `J` card now becomes a `joker card`. Whenever this card is in a hand it's used to improve the type of the hand.
+So for example a `three of a kind` becomes a `four of a kind`. But also when encountering a joker card while comparing the cards of the hand
+it should be treated as the lowest cards of all.
+
+To do that let's first create a new value for our joker card, which ASCII code is less than the current lowest card `2`.
+So let's just use `1` for that:
+
+```kotlin
+private const val JOKER_PART_TWO = '1'
+```
+
+Next I created a `partTwo: boolean` parameter in the parsing function, which then decides with which character `J` should be replaced:
+
+```kotlin
+{...}
+.replace('J', if (partTwo) JOKER_PART_TWO else Char('9'.code + 2))
+```
+
+Now we just need to adjust the type comparison, and then we should be done.
+
+For that I created a new function in the `Hand` class:
+
+```kotlin
+fun handleJokerCards() {
+    cards.count { it == JOKER_PART_TWO }.let { jokerCards ->
+        if (jokerCards in 1..4) {
+            groups.removeIf { it.first == JOKER_PART_TWO }
+            groups[0] = groups[0].first to groups[0].second + jokerCards
+        }
+    }
+}
+```
+
+This function starts by counting how many joker cards are in the current hand.
+If we at least have `1` joker card and at max `4`, I'm removing the group which corresponds to the joker cards, and
+I'm adding the amount of it to the group with the most cards which is always at index `0`.
+The rest of the logic can actually stay the same.
+
+With that done my `partTwo` function looks like this:
+
+```kotlin
+override fun partTwo(input: List<String>): Int {
+    return parseInput(input, partTwo = true)
+        .onEach(Hand::handleJokerCards)
+        .run(::calculateWinnings)
+}
+```
+
+Let's run it and see what we get. For the test the output is `5905` and for my input it is `252127335`.
+Both numbers are correct, and so we collect the second star ⭐ for today.
+
+## Final Words
+
+Today was actually a quite cool challenge because there are many different ways in which this could be solved. Not only for part two but
+for both parts. And there we're a lot of smart approaches to this, which I think I used a few super cool ones.
+But I can also recommend looking at the [reddit thread](https://www.reddit.com/r/adventofcode/comments/18cnzbm/2023_day_7_solutions/) of today's challenges to see how others solved it!
+
+You can take a look at my full solution [here](https://github.com/7rebux/advent-of-code-2023/blob/main/src/main/kotlin/de/nosswald/aoc/days/Day07.kt).
+
+See you tomorrow!
