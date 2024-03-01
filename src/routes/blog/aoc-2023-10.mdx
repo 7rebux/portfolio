@@ -1,0 +1,210 @@
+import { PostHeader } from '~/components/PostHeader.jsx';
+import { default as PostLayout } from '~/components/PostLayout.jsx';
+
+export default PostLayout;
+
+<PostHeader
+  title='Advent of Code 2023 - Day 10: Pipe Maze'
+  description='Solving the 10th day of Advent of Code 2023 in Kotlin'
+  date='Dec 10, 2023'
+/>
+
+Welcome back to today's [Advent of Code](https://adventofcode.com/) challenge!
+I'm super excited to solve today's problem so let's get straight into it.
+
+## The Problem
+
+> Today's challenge can be found [here](https://adventofcode.com/2023/day/10)
+
+Today we find ourselves on a huge field of pipes. We made a sketch of the entire area and
+this is going to be our puzzle input for today.
+
+The example we are provided with looks like this:
+
+```text
+.....
+.F-7.
+.|.|.
+.L-J.
+.....
+```
+
+If you look closely you can see a loop in the middle of all those points. Points are just empty space and all the different
+characters are a specific pipe. These are all the pipes we are supposed to handle so as you can see we got pipes for vertical
+and horizontal connections and also corner pipes.
+
+For simplicity reasons I replaced the upper left pipe with an `F`. In the example provided this is actually an `S`.
+This marks the starting position of the pipe maze and this `S` pipe can represent any other pipe, but we don't know which.
+
+Our goal for today is it to count the steps it takes to reach the farthest point in the maze, since this is a loop it would take
+the same amount of steps in both directions. So my approach would be to find the entire loop and then just divide its length by two.
+
+## ⭐ Part 1
+
+Let's get started by looking for the starting point which is marked with `S` in the maze.
+
+```kotlin
+val start = Point(
+    x = input.first { it.contains("S") }.indexOf("S"),
+    y = input.indexOfFirst { it.contains("S") }
+)
+```
+
+Once we have our start point we can use that as the origin to find the rest of the loop.
+This is actually pretty easy because it's just a linear way, and we will find it if we either traverse the loop forwards
+or backwards.
+
+My implementation for this looks like the following:
+
+```kotlin
+val path = mutableSetOf(start)
+
+while (true) {
+    val (x, y) = path.last()
+    val ch = input[y][x]
+
+    // Up
+    if (ch in "S|JL" && input[y - 1][x] in "|7F" && !path.contains(Point(x, y - 1))) {
+        path.add(Point(x, y - 1))
+    }
+    // Down
+    else if (ch in "S|7F" && input[y + 1][x] in "|JL" && !path.contains(Point(x, y + 1))) {
+        path.add(Point(x, y + 1))
+    }
+    // Left
+    else if (ch in "S-J7" && input[y][x - 1] in "-LF" && !path.contains(Point(x - 1, y))) {
+        path.add(Point(x - 1, y))
+    }
+    // Right
+    else if (ch in "S-LF" && input[y][x + 1] in "-J7" && !path.contains(Point(x + 1, y))) {
+        path.add(Point(x + 1, y))
+    }
+    // Reached start point
+    else return path
+}
+```
+
+I use a set to keep track of all the points we already traversed in the loop. Once I find a valid connecting pipe
+I just add it to the end of the set.
+If we reach do not find any connecting pipe have not already visited we know that the loop is complete, and we just return the set of all
+the points. Keep in mind that this gives us the points of the loop in a sorted order this is important for later.
+
+Once that is done we can just return the length of the set divided by `2`and we should have the solution for the first part
+of today's challenge:
+
+```kotlin
+override fun partOne(input: List<String>): Int {
+    return ceil(findLoopPoints(input).size / 2.0).toInt()
+}
+```
+
+As you also can see I ceil the value of the equation because if the loop size is an odd number the farthest point is always the
+next bigger number.
+
+Running this gives me `4` for the example input and `6778` for my personal input.
+Both values are correct, and we claim the first star ⭐ of today's challenge!
+
+## ⭐ Part 2
+
+Before I explain the second part let me show another example first, so you can better understand it:
+
+```text
+...........
+.S-------7.
+.|F-----7|.
+.||.....||.
+.||.....||.
+.|L-7.F-J|.
+.|..|.|..|.
+.L--J.L--J.
+...........
+```
+
+Take some time to understand the example because there is an inner and an outer loop, but they are still connected so both count.
+
+The task for this part is to count all empty tiles which are located **inside** the loop.
+For this example this would be the following tiles (I marked them with `x`):
+
+```text
+...........
+.S-------7.
+.|F-----7|.
+.||.....||.
+.||.....||.
+.|L-7.F-J|.
+.|xx|.|xx|.
+.L--J.L--J.
+...........
+```
+
+There are many different approaches on how to solve this, I went with checking for each point if the point is inside
+the polygon (our loop).
+
+Let me first show you the final `partTwo` function and then how I check whether a point is inside or not of the polygon.
+
+```kotlin
+override fun partTwo(input: List<String>): Int {
+    val maze = input.flatMapIndexed { y: Int, line: String -> line.mapIndexed { x, _ -> Point(x, y) } }
+    val loop = findLoopPoints(input).toList()
+
+    return maze.filterNot(loop::contains).count { isPointInside(it, loop) }
+}
+```
+
+So first of all I collected all points of the puzzle input with this neat oneliner. And then just like in part one I
+searched for the loop points. With this information we can go through each point and filter out every point which is
+already present in the polygon and then count all points which are inside the polygon.
+
+Checking if a point is contained inside a polygon can be done by using a popular algorithm which works by creating rays from the point.
+Fully explaining the algorithm here would make up for an own blog post, so I will try to explain it roughly and if you want
+to learn more about it, you can read that in [this awesome article](https://www.codingninjas.com/studio/library/check-if-a-point-lies-in-the-interior-of-a-polygon).
+
+```kotlin
+private fun isPointInside(point: Point, loop: List<Point>): Boolean {
+    var inside = false
+    var p1 = loop.first()
+
+    for (i in 1..loop.size) {
+        val p2 = loop[i % loop.size]
+
+        if (point.y > min(p1.y, p2.y)) {
+            if (point.y <= max(p1.y, p2.y)) {
+                if (point.x <= max(p1.x, p2.x)) {
+                    val intersection = (point.y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y) + p1.x
+
+                    if (p1.x == p2.x || point.x <= intersection) {
+                        inside = !inside
+                    }
+                }
+            }
+        }
+
+        p1 = p2
+    }
+
+    return inside
+}
+```
+
+My function takes 2 parameters as its input: `point` the point to check and `loop` which corresponds to a set of all
+points of the polygon in order.
+
+Then I loop through each edge of the polygon and check if it is possible to determine an intersection of the point with the edge.
+If there is an intersection I flip the `inside` value which initial value is `false`. This is basically the same as keeping track of an
+intersection count and then checking if the number is odd or even.
+In this case, if the number is `odd` the point is inside the polygon and if the number is `even` the point is outside.
+
+There is obviously a lot of space for performance optimisations, but for these types of challenges I always try to aim for
+an easy to implement fast solution.
+
+I first tried to run the test with the input from above, and it indeed returned `4` points which are located inside the
+polygon which is correct. And also the output for my puzzle input `433` is correct. There is the second star ⭐ of today's
+challenge!
+
+## Final Words
+
+I really enjoyed today's problem because there are many ways to solve it and I also learned a lot while implementing my
+solution. And especially part two was not really predictable from just seeing the first part.
+Takes quite some time to fully understand the problem but once you do its super fun to solve it!
+
+As always, you can check out my full solution [here](https://github.com/7rebux/advent-of-code-2023/blob/main/src/main/kotlin/de/nosswald/aoc/days/Day10.kt).
