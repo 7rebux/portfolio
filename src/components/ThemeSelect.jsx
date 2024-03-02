@@ -10,7 +10,7 @@ const themes = {
   light: SunIcon,
 };
 
-const ThemeSelect = (props) => {
+const ThemeSelect = () => {
   const [expanded, setExpanded] = createSignal(false);
 
   clickOutside;
