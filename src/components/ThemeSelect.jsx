@@ -1,6 +1,6 @@
 import { For, Show, createSignal } from 'solid-js';
 import clickOutside from '~/directives/clickOutside';
-import { theme, setTheme } from '~/utils/theme.js';
+import { selectedTheme, updateTheme } from '~/utils/theme.js';
 import { DesktopIcon, MoonIcon, SunIcon } from './icons';
 import { Dynamic } from 'solid-js/web';
 
@@ -16,7 +16,7 @@ const ThemeSelect = () => {
   clickOutside;
 
   const handleThemeChange = (newTheme) => {
-    setTheme(newTheme);
+    updateTheme(newTheme);
     setExpanded(false);
   };
 
@@ -32,10 +32,10 @@ const ThemeSelect = () => {
       <button
         class='flex w-24 items-center justify-center gap-2 rounded-full border bg-surface-lighter py-2 text-sm capitalize text-black dark:bg-surface-darker dark:text-white sm:bg-surface-light sm:dark:bg-surface-dark'
         onClick={() => setExpanded(!expanded())}
-        aria-label={theme()}
+        aria-label={selectedTheme()}
       >
-        {themes[theme()]}
-        {theme()}
+        {themes[selectedTheme()]}
+        {selectedTheme()}
       </button>
 
       {/* Content */}
@@ -50,7 +50,7 @@ const ThemeSelect = () => {
               <li
                 class='flex items-center gap-2 border-t bg-surface-light p-2 text-sm capitalize text-black transition first:border-0 hover:bg-surface-lighter aria-selected:font-semibold aria-selected:text-primary dark:bg-surface-dark dark:text-white hover:dark:bg-surface-darker aria-selected:dark:text-primary'
                 role='option'
-                aria-selected={theme() === name}
+                aria-selected={selectedTheme() === name}
                 onClick={() => handleThemeChange(name)}
               >
                 <Dynamic component={icon} />
