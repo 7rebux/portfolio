@@ -6,7 +6,7 @@ import { For } from 'solid-js';
 
 const About = () => {
   return (
-    <div class='mx-0 mt-8 flex flex-col gap-10 sm:mt-0 4xl:mx-64'>
+    <div class='mx-0 mt-8 flex flex-col gap-10 sm:mt-0 4xl:mx-48'>
       {/* Introduction */}
       <div class='flex flex-col-reverse justify-between gap-10 sm:flex-row'>
         <div class='flex flex-col gap-10 text-center sm:text-left'>
@@ -29,7 +29,7 @@ const About = () => {
             </p>
           </div>
         </div>
-        <div class='flex w-full justify-center sm:w-fit'>
+        <div class='flex justify-center'>
           {/* TODO: Add fancy animation */}
           <img
             class='h-48 w-48 rounded-full border-2'
