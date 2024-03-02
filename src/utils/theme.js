@@ -15,9 +15,8 @@ createEffect(() => {
   );
 });
 
-const updateTheme = (newTheme) => {
-  setSelectedTheme(newTheme);
-  themeCookie.serialize(newTheme).then((value) => (document.cookie = value));
-};
+createEffect(() => {
+  themeCookie.serialize(selectedTheme()).then((value) => (document.cookie = value));
+});
 
-export { themeCookie, calculatedTheme, selectedTheme, setIsSystemDark, updateTheme };
+export { themeCookie, calculatedTheme, selectedTheme, setIsSystemDark, setSelectedTheme };

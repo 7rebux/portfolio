@@ -1,5 +1,5 @@
 import { StartServer, createHandler, renderAsync } from 'solid-start/entry-server';
-import { themeCookie, updateTheme, setIsSystemDark } from '~/utils/theme.js';
+import { themeCookie, setSelectedTheme, setIsSystemDark } from '~/utils/theme.js';
 
 export default createHandler(
   ({ forward }) => {
@@ -7,7 +7,7 @@ export default createHandler(
       const request = event.request;
       const theme = await themeCookie.parse(request.headers.get('cookie'));
 
-      updateTheme(theme ?? 'system');
+      setSelectedTheme(theme ?? 'system');
       setIsSystemDark(event.request.headers.get('Sec-CH-Prefers-Color-Scheme') === 'dark');
 
       return forward(event);
