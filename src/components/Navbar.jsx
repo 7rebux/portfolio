@@ -24,7 +24,7 @@ const Navbar = () => {
 
   return (
     <nav aria-expanded={expanded()}>
-      {/* Default navbar */}
+      {/* Desktop navbar */}
       <ul class='hidden gap-8 rounded-full border bg-surface-light px-8 py-3 dark:bg-surface-dark sm:flex'>
         <For each={routes}>
           {({ title, path }) => (
