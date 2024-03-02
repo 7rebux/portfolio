@@ -1,18 +1,22 @@
-import { createStore } from 'solid-js/store';
 import { createCookie } from 'solid-start';
+import { createEffect, createSignal } from 'solid-js';
 
-const [innerTheme, setThemeInner] = createStore({ theme: 'system', systemTheme: false });
+const [isSystemDark, setIsSystemDark] = createSignal(false);
+const [selectedTheme, setSelectedTheme] = createSignal('system');
+const [calculatedTheme, setCalculatedTheme] = createSignal('');
+
 const themeCookie = createCookie('theme', { httpOnly: false, sameSite: 'strict' });
 
-const setTheme = (newTheme) => {
-  setThemeInner({ ...innerTheme, theme: newTheme });
-  themeCookie.serialize(newTheme).then((value) => (document.cookie = value));
-};
+createEffect(() => {
+  setCalculatedTheme(
+    selectedTheme() === 'dark' || (selectedTheme() === 'system' && isSystemDark())
+      ? 'dark'
+      : 'light'
+  );
+});
 
-const theme = () => innerTheme.theme;
+createEffect(() => {
+  themeCookie.serialize(selectedTheme()).then((value) => (document.cookie = value));
+});
 
-const getThemeClass = () => {
-  return theme() === 'dark' || (theme() === 'system' && innerTheme.systemTheme) ? 'dark' : null;
-};
-
-export { setThemeInner, themeCookie, setTheme, theme, getThemeClass, innerTheme };
+export { themeCookie, calculatedTheme, selectedTheme, setIsSystemDark, setSelectedTheme };
