@@ -1,5 +1,12 @@
 [
   {
+    "title": "Portfolio",
+    "href": "https://github.com/7rebux/portfolio",
+    "description": "The website you are currently looking at",
+    "images": ["images/portfolio/dark.png", "images/portfolio/light.png"],
+    "stack": ["JavaScript", "Solid", "Tailwind"]
+  },
+  {
     "title": "League Tools",
     "href": "https://github.com/7rebux/league-tools",
     "description": "A cross-platform desktop app with many League Client exploits (e.g profile customization)",
@@ -8,7 +15,14 @@
       "images/league-tools/challenges.png",
       "images/league-tools/status.png"
     ],
-    "stack": ["TypeScript", "Sass", "React", "Electron", "Webpack"]
+    "stack": ["TypeScript", "Sass", "React", "Electron"]
+  },
+  {
+    "title": "Advent of Code 2023",
+    "href": "https://github.com/7rebux/advent-of-code-2023",
+    "description": "My solutions for the Advent of Code 2023 event",
+    "images": [],
+    "stack": ["Kotlin"]
   },
   {
     "title": "Jump and Run",
@@ -18,16 +32,16 @@
     "stack": ["Kotlin", "SQL", "Exposed", "Spigot"]
   },
   {
-    "title": "Portfolio",
-    "href": "https://github.com/7rebux/portfolio",
-    "description": "The website you are currently looking at",
-    "images": ["images/portfolio/dark.png", "images/portfolio/light.png"],
-    "stack": ["JavaScript", "Solid", "Tailwind"]
+    "title": "Minecraft Name Checker",
+    "href": "https://github.com/7rebux/minecraft-name-checker",
+    "description": "Command line interface to scan & claim Minecraft usernames",
+    "images": [],
+    "stack": ["TypeScript"]
   },
   {
     "title": "Zess",
     "href": "https://github.com/7rebux/zess",
-    "description": "Chess related things in zig",
+    "description": "Implementing popular chess programming related things in Zig",
     "images": [],
     "stack": ["Zig"]
   }
