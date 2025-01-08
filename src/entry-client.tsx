@@ -1,4 +1,5 @@
-import { mount, StartClient } from 'solid-start/entry-client';
+// @refresh reload
+import { mount, StartClient } from '@solidjs/start/client';
 import { setIsSystemDark, themeCookie, setSelectedTheme } from '~/utils/theme.js';
 import { inject } from '@vercel/analytics';
 import { injectSpeedInsights } from '@vercel/speed-insights';
@@ -15,4 +16,4 @@ mount(() => {
   injectSpeedInsights({});
 
   return <StartClient />;
-}, document);
+}, document.getElementById('app')!);

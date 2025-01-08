@@ -1,6 +1,6 @@
 import posts from '~/data/posts.json';
 import { For } from 'solid-js';
-import { A } from 'solid-start';
+import { A } from '@solidjs/router';
 
 const Blog = () => {
   return (

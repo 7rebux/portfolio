@@ -1,9 +1,10 @@
 import { For, Show, createSignal, createEffect } from 'solid-js';
 import { Portal } from 'solid-js/web';
-import { ExternalLinkIcon, GitHubIcon } from '~/components/icons';
+import { ExternalLinkIcon, GitHubIcon } from '~/components/icons.js';
 import clickOutside from '~/directives/clickOutside';
 import projects from '~/data/projects.json';
 import { github } from '~/data/socials.json';
+import { clientOnly } from '@solidjs/start';
 
 const languageToColor = {
   TypeScript: 'text-[#007ACC] border-[#007ACC]',
@@ -14,7 +15,7 @@ const languageToColor = {
 };
 
 const Projects = () => {
-  const [preview, setPreview] = createSignal(null);
+  const [preview, setPreview] = createSignal<string | null>(null);
 
   // This is necessary to prevent unused import cleanup
   clickOutside;
@@ -24,6 +25,7 @@ const Projects = () => {
     document.body.style.overflow = preview() ? 'hidden' : 'visible';
   }, preview);
 
+  // @ts-ignore
   return (
     <div class='flex w-full flex-col items-center text-black dark:text-white'>
       {/* Project list */}
@@ -44,7 +46,7 @@ const Projects = () => {
 
               {/* Images */}
               <Show
-                when={images.length !== 0}
+                when={images.length > 0}
                 fallback={<p class='mb-4 text-zinc-500'>No preview</p>}
               >
                 <div class='mb-4 flex select-none snap-x snap-mandatory gap-4 overflow-x-auto'>
@@ -97,12 +99,13 @@ const Projects = () => {
       </p>
 
       {/* Image preview */}
-      <Portal mount={document.getElementById('modal')}>
+      <Portal>
+        <p>Portal content</p>
         <Show when={preview()}>
           <div class='flex h-screen w-screen items-center justify-center p-4 backdrop-blur-lg backdrop-brightness-75'>
             <img
               use:clickOutside={() => setPreview(null)}
-              src={preview()}
+              src={preview()!}
               alt='Project preview large image'
             />
           </div>

@@ -1,5 +1,5 @@
-import { createCookie } from 'solid-start';
 import { createEffect, createSignal } from 'solid-js';
+import { setCookie } from 'vinxi/http';
 
 const [isSystemDark, setIsSystemDark] = createSignal(false);
 const [selectedTheme, setSelectedTheme] = createSignal('system');

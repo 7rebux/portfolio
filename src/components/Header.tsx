@@ -1,5 +1,5 @@
 import Navbar from './Navbar';
-import ThemeSelect from './ThemeSelect';
+// import ThemeSelect from './ThemeSelect';
 
 const Header = () => {
   return (
@@ -18,9 +18,7 @@ const Header = () => {
       <Navbar />
 
       {/* Theme select */}
-      <div class='flex flex-grow basis-0 justify-end'>
-        <ThemeSelect />
-      </div>
+      <div class='flex flex-grow basis-0 justify-end'>{/*<ThemeSelect />*/}</div>
     </header>
   );
 };

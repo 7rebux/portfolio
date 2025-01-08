@@ -1,14 +1,15 @@
 import { For, Show, createEffect, createSignal } from 'solid-js';
 import { Portal } from 'solid-js/web';
-import { A, useLocation } from 'solid-start';
 import { CloseIcon, HamburgerMenuIcon } from './icons';
 import clickOutside from '~/directives/clickOutside';
-import routes from '~/data/routes.json';
+import Routes from '~/data/routes.json';
+import { A, useLocation } from '@solidjs/router';
 
 const Navbar = () => {
   const [expanded, setExpanded] = createSignal(false);
   const location = useLocation();
-  const active = (path) => {
+
+  const active = (path: string) => {
     if (path === '/') {
       return location.pathname === path;
     } else {
@@ -16,6 +17,7 @@ const Navbar = () => {
     }
   };
 
+  // TODO: Is this still needed
   clickOutside;
 
   createEffect(() => {
@@ -26,7 +28,7 @@ const Navbar = () => {
     <nav aria-expanded={expanded()}>
       {/* Desktop navbar */}
       <ul class='hidden gap-8 rounded-full border bg-surface-light px-8 py-3 dark:bg-surface-dark sm:flex'>
-        <For each={routes}>
+        <For each={Routes}>
           {({ title, path }) => (
             <li
               aria-selected={active(path)}
@@ -64,7 +66,7 @@ const Navbar = () => {
               </div>
 
               {/* Nav items */}
-              <For each={routes}>
+              <For each={Routes}>
                 {({ title, path }) => (
                   <A
                     class='border-b bg-surface-light p-3 text-black transition last:border-0 hover:bg-surface-lighter aria-selected:font-semibold aria-selected:text-primary dark:bg-surface-dark dark:text-white hover:dark:bg-surface-darker aria-selected:dark:text-primary'

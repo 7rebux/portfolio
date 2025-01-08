@@ -1,5 +1,5 @@
 import { For } from 'solid-js';
-import SkillIcon from '~/components/SkillIcon';
+import SkillIcon from '~/components/SkillIcon.js';
 import stack from '~/data/stack.json';
 
 const Stack = () => {

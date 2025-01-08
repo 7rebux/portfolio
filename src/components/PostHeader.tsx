@@ -1,4 +1,4 @@
-import { CalenderIcon } from '~/components/icons.jsx';
+import { CalenderIcon } from '~/components/icons.tsx';
 import { Meta, Title } from '@solidjs/meta';
 
 export function PostHeader({ title, description, date }) {
