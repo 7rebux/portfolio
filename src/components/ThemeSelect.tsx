@@ -1,7 +1,7 @@
 import { For, Show, createSignal } from 'solid-js';
 import clickOutside from '~/directives/clickOutside';
 import { selectedTheme, setSelectedTheme } from '~/utils/theme.js';
-import { DesktopIcon, MoonIcon, SunIcon } from './icons';
+import { DesktopIcon, MoonIcon, SunIcon } from './icons.js';
 import { Dynamic } from 'solid-js/web';
 
 const themes = {
@@ -10,7 +10,7 @@ const themes = {
   light: SunIcon,
 };
 
-const ThemeSelect = () => {
+export default function ThemeSelect() {
   const [expanded, setExpanded] = createSignal(false);
 
   clickOutside;
@@ -62,6 +62,4 @@ const ThemeSelect = () => {
       </Show>
     </div>
   );
-};
-
-export default ThemeSelect;
+}

@@ -1,15 +1,15 @@
 import { For } from 'solid-js';
 import { EmailIcon, GitHubIcon, LinkedInIcon } from './icons';
 import { Dynamic } from 'solid-js/web';
-import socialLinks from '~/data/socials.json';
+import SocialLinks from '~/data/socials.json';
 
 const socials = [
-  { title: 'GitHub', href: socialLinks.github, icon: GitHubIcon },
-  { title: 'LinkedIn', href: socialLinks.linkedin, icon: LinkedInIcon },
-  { title: 'E-Mail', href: socialLinks.email, icon: EmailIcon },
+  { title: 'GitHub', href: SocialLinks.github, icon: GitHubIcon },
+  { title: 'LinkedIn', href: SocialLinks.linkedin, icon: LinkedInIcon },
+  { title: 'E-Mail', href: SocialLinks.email, icon: EmailIcon },
 ];
 
-const Footer = () => {
+export default function Footer() {
   return (
     <footer class='border-t bg-surface-light dark:bg-surface-dark lg:px-20 xl:px-40 2xl:px-60'>
       <div class='flex flex-col items-center justify-between gap-5 px-4 py-10 sm:flex-row'>
@@ -19,7 +19,7 @@ const Footer = () => {
         </p>
 
         {/* Copyright */}
-        <p class='text-sm text-zinc-500'>&copy; 2023 Nils Osswald. All rights reserved.</p>
+        <p class='text-sm text-zinc-500'>&copy; 2024 Nils Osswald. All rights reserved.</p>
 
         {/* Social links */}
         <div class='inline-flex flex-grow basis-0 justify-end gap-4'>
@@ -37,6 +37,4 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}
